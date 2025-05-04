@@ -1,0 +1,6 @@
+---
+description: 当要添加新的依赖时，先检查是否已经存在
+globs: 
+alwaysApply: false
+---
+当要添加新的依赖时，先检查是否已经存在
