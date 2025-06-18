@@ -1,11 +1,16 @@
 import { Box } from "@mui/material";
+import { Outlet } from "react-router";
 
-import { Sidebar } from "./components/Sidebar";
+import { SideNav } from "./components/sidenav";
+import { routerInfos } from "./router";
 
 function App() {
   return (
     <Box sx={{ display: "flex" }}>
-      <Sidebar />
+      <SideNav routerInfos={routerInfos} />
+      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+        <Outlet />
+      </Box>
     </Box>
   );
 }
