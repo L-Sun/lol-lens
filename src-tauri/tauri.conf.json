@@ -26,6 +26,9 @@
     "targets": "nsis",
     "icon": [
       "icons/icon.ico"
+    ],
+    "resources": [
+      "riotgames.pem"
     ]
   }
 }

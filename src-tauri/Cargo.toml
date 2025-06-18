@@ -22,13 +22,18 @@ tauri = { version = "2", features = [] }
 tauri-plugin-opener = "2"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
-shaco = "0.6.0"
 tokio = { version = "1.44.2", features = ["macros"] }
 anyhow = "1.0.98"
 windows-sys = "0.59.0"
 regex = "1.11.1"
 base64 = "0.22.1"
 sysinfo = "0.35.0"
+tauri-plugin-websocket = { version = "2", features = ["rustls-tls"] }
+rustls = "0.23.27"
+tokio-tungstenite = "0.26.2"
+tauri-plugin-http = "2"
+reqwest = "0.12.20"
+tracing-subscriber = "*"
 
 [patch.crates-io]
-shaco = { git = "https://github.com/L-Sun/Shaco.git", branch = "main" }
+tauri-plugin-http = { path = "../../plugins-workspace/plugins/http" }

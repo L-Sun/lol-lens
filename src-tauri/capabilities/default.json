@@ -7,6 +7,22 @@
   ],
   "permissions": [
     "core:default",
-    "opener:default"
+    "opener:default",
+    {
+      "identifier": "http:default",
+      "allow": [
+        {
+          "url": "https://127.0.0.1:*"
+        }
+      ]
+    },
+    {
+      "identifier": "websocket:default",
+      "allow": [
+        {
+          "url": "wss://127.0.0.1:*"
+        }
+      ]
+    }
   ]
 }
