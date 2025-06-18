@@ -8,9 +8,10 @@ import { LcuWebSocket } from "./lcu/ws";
 
 export function useLOLRunningState() {
   const { data } = useRequest(
-    async () => await invoke<boolean>("lol_running_state"),
+    async () => await invoke<boolean>("is_lol_running"),
     {
       pollingInterval: 1000,
+      cacheKey: "is_lol_running",
     }
   );
 

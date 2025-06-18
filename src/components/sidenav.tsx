@@ -1,4 +1,5 @@
 import {
+  Box,
   Drawer as MuiDrawer,
   List,
   ListItem,
@@ -9,6 +10,7 @@ import {
 import { useLocation } from "react-router";
 
 import { RouterInfo } from "../router";
+import { LolStatusIndicator } from "./lol-status-indicator";
 
 const Drawer = styled(MuiDrawer)(({ theme }) => ({
   width: theme.spacing(7),
@@ -37,6 +39,10 @@ export function SideNav({ routerInfos }: SideNavProps) {
             </ListItemButton>
           </ListItem>
         ))}
+      </List>
+      <Box sx={{ flexGrow: 1 }} />
+      <List>
+        <LolStatusIndicator />
       </List>
     </Drawer>
   );
