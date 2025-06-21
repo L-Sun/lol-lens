@@ -1,21 +1,34 @@
 import { invoke } from "@tauri-apps/api/core";
-import { fetch } from "@tauri-apps/plugin-http";
-import { useRequest, useUnmount } from "ahooks";
-import { useEffect, useRef } from "react";
+import { useInterval, useRequest, useUnmount } from "ahooks";
+import { useEffect, useState } from "react";
 
-import { LcuInfoSchema } from "./lcu/types";
+import { fetch } from "./lcu/fetch";
+import {
+  Endpoint,
+  EndpointSchema,
+  endpointSchemas,
+  LcuInfoSchema,
+} from "./lcu/types";
 import { LcuWebSocket } from "./lcu/ws";
 
+type RequestOptions<TData> = Parameters<typeof useRequest<TData, []>>[1];
+
 export function useLOLRunningState() {
-  const { data } = useRequest(
-    async () => await invoke<boolean>("is_lol_running"),
-    {
-      pollingInterval: 1000,
-      cacheKey: "is_lol_running",
-    }
+  const [running, setRunning] = useState(false);
+
+  useInterval(
+    () => {
+      invoke<boolean>("is_lol_running")
+        .then((v) => {
+          if (v !== running) setRunning(v);
+        })
+        .catch(console.error);
+    },
+    1000,
+    { immediate: true }
   );
 
-  return !!data;
+  return running;
 }
 
 export function useLcuInfo() {
@@ -23,53 +36,85 @@ export function useLcuInfo() {
 
   const { data } = useRequest(
     async () => {
-      if (!lolRunning) return;
-
       return LcuInfoSchema.parse(await invoke("get_lcu_port_token"));
     },
     {
       refreshDeps: [lolRunning],
+      cacheKey: "lcu_info",
+      ready: lolRunning,
     }
   );
 
   return data;
 }
 
-export function useLcuApi(endpoint: string) {
+export function useLcuApi(
+  endpoint: Endpoint,
+  options?: RequestOptions<EndpointSchema<Endpoint>>
+) {
   const info = useLcuInfo();
 
-  return useRequest(async () => {
-    if (!info) return;
-    const response = await fetch(`http://127.0.0.1:${info.port}/${endpoint}`, {
-      headers: {
-        Authorization: `Basic ${info.token}`,
-      },
-    });
-    return response.json() as Promise<unknown>;
-  });
+  return useRequest(
+    async () => {
+      if (!info) throw new Error("LCU is not running");
+      const response = await fetch(endpoint, info);
+      const contentType = response.headers.get("Content-Type");
+      if (contentType?.includes("application/json")) {
+        return endpointSchemas[endpoint].parse(await response.json());
+      }
+      throw new Error(`Unsupported content type: ${contentType}`);
+    },
+    {
+      ...options,
+      refreshDeps: [info, ...(options?.refreshDeps ?? [])],
+      ready: !!info && (options?.ready ?? true),
+    }
+  );
 }
 
-function useLcuWebSocket() {
+export function useLcuResource(url: string, options: RequestOptions<Blob>) {
   const info = useLcuInfo();
-  const websocketRef = useRef<LcuWebSocket>();
 
-  useEffect(() => {
-    websocketRef.current?.close();
-    websocketRef.current = undefined;
-    if (info) {
-      LcuWebSocket.connect(info)
-        .then((ws) => {
-          websocketRef.current = ws;
-        })
-        .catch(console.error);
+  return useRequest(
+    async () => {
+      if (!info) throw new Error("LCU is not running");
+      const response = await fetch(url, info);
+      const contentType = response.headers.get("Content-Type");
+      if (contentType?.includes("image")) {
+        return response.blob();
+      }
+      throw new Error(`Unsupported content type: ${contentType}`);
+    },
+    {
+      ...options,
+      refreshDeps: [info, ...(options?.refreshDeps ?? [])],
+      ready: !!info && (options?.ready ?? true),
+      cacheKey: options?.cacheKey ?? url,
     }
-  }, [info]);
+  );
+}
+
+export function useLcuWebSocket() {
+  const info = useLcuInfo();
+
+  const { data: websocket } = useRequest(
+    async () => {
+      if (!info) return;
+      console.log("connecting to websocket");
+      return LcuWebSocket.connect(info);
+    },
+    {
+      refreshDeps: [info],
+      ready: !!info,
+      cacheKey: "lcu_websocket",
+    }
+  );
 
   useUnmount(() => {
-    websocketRef.current?.close();
+    websocket?.close();
   });
 
-  return websocketRef.current;
+  return websocket;
 }
 
 export function useLcuEvent(event: string, callback: (data: unknown) => void) {
@@ -78,6 +123,31 @@ export function useLcuEvent(event: string, callback: (data: unknown) => void) {
   useEffect(() => {
     if (!websocket) return;
 
-    return websocket.subscribe(event, callback);
+    const disposable = websocket.subscribe(event, callback);
+    return () => {
+      disposable();
+    };
   }, [websocket, event, callback]);
+}
+
+export function useLcuCall(
+  cmd: Endpoint,
+  options?: RequestOptions<EndpointSchema<Endpoint>>
+) {
+  const websocket = useLcuWebSocket();
+
+  return useRequest(
+    async () => {
+      if (!websocket) throw new Error("Websocket is not connected");
+      return await websocket.call(cmd);
+    },
+    {
+      ...options,
+      refreshDeps: [
+        websocket,
+        ...(options?.refreshDeps ? options.refreshDeps : []),
+      ],
+      ready: !!websocket,
+    }
+  );
 }

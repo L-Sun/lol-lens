@@ -1,7 +1,29 @@
 import WebSocket from "@tauri-apps/plugin-websocket";
+import { noop, Subject } from "rxjs";
 
 import { DisposableGroup } from "../utils";
-import { LcuInfo, LcuMessage, LcuMessageSchema, LcuMessageType } from "./types";
+import {
+  Endpoint,
+  EndpointSchema,
+  endpointSchemas,
+  LcuInfo,
+  LcuMessage,
+  LcuMessageSchema,
+  LcuMessageType,
+} from "./types";
+
+type CallResult = {
+  requestId: string;
+} & (
+  | {
+      status: "success";
+      result: unknown;
+    }
+  | {
+      status: "error";
+      result: { errorType: string; message: string };
+    }
+);
 
 export class LcuWebSocket {
   private readonly subscriptions = new Map<
@@ -10,6 +32,7 @@ export class LcuWebSocket {
   >();
 
   private readonly disposables = new DisposableGroup();
+  private readonly callResultSubject = new Subject<CallResult>();
 
   private constructor(private readonly ws: WebSocket) {
     const listener = this.ws.addListener((message) => {
@@ -37,10 +60,24 @@ export class LcuWebSocket {
             console.log("Call", payload);
             break;
           case LcuMessageType.CALLRESULT:
-            console.log("Call result", payload);
+            {
+              const [requestId, result] = payload as [string, unknown];
+              this.callResultSubject.next({
+                requestId,
+                status: "success",
+                result,
+              });
+            }
             break;
           case LcuMessageType.CALLERROR:
-            console.log("Call error", payload);
+            {
+              const [requestId, errorType, message] = payload as string[];
+              this.callResultSubject.next({
+                requestId,
+                status: "error",
+                result: { errorType, message },
+              });
+            }
             break;
           case LcuMessageType.SUBSCRIBE:
             console.log("Subscribe", payload);
@@ -81,6 +118,8 @@ export class LcuWebSocket {
   }
 
   subscribe(event: string, callback: (data: unknown) => void): () => void {
+    if (event.length === 0) return noop;
+
     if (!this.subscriptions.has(event)) {
       this.ws
         .send(JSON.stringify([LcuMessageType.SUBSCRIBE, event]))
@@ -104,5 +143,41 @@ export class LcuWebSocket {
         this.subscriptions.delete(event);
       }
     };
+  }
+
+  async call(endpoint: Endpoint): Promise<EndpointSchema<Endpoint>>;
+  async call(endpoint: string): Promise<unknown>;
+
+  async call(endpoint: string): Promise<unknown> {
+    const requestId = Math.random().toString(36).substring(2, 15);
+
+    const result = new Promise((resolve, reject) => {
+      const subscription = this.callResultSubject.subscribe(
+        ({ requestId: resultRequestId, result, status }) => {
+          if (requestId === resultRequestId) {
+            if (status === "success") {
+              if (endpoint in endpointSchemas) {
+                resolve(endpointSchemas[endpoint as Endpoint].parse(result));
+              } else {
+                resolve(result);
+              }
+            } else {
+              reject(
+                new Error(result.errorType, {
+                  cause: result.message,
+                })
+              );
+            }
+            subscription.unsubscribe();
+          }
+        }
+      );
+    });
+
+    await this.ws.send(
+      JSON.stringify([LcuMessageType.CALL, requestId, endpoint])
+    );
+
+    return result;
   }
 }
