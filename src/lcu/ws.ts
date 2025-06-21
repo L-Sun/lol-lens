@@ -1,7 +1,8 @@
 import WebSocket from "@tauri-apps/plugin-websocket";
 import { noop, Subject } from "rxjs";
 
-import { DisposableGroup } from "../utils";
+import { DisposableGroup } from "@/utils";
+
 import {
   Endpoint,
   EndpointSchema,

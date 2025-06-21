@@ -1,5 +1,4 @@
-import CodeIcon from "@mui/icons-material/Code";
-import PersonIcon from "@mui/icons-material/Person";
+import { Bug, User } from "lucide-react";
 import { ComponentType } from "react";
 import { createBrowserRouter } from "react-router";
 
@@ -9,7 +8,7 @@ import { Me } from "./pages/me";
 
 export type RouterInfo = Parameters<typeof createBrowserRouter>[0][number] & {
   path: string;
-  NavIcon: ComponentType;
+  NavIcon?: ComponentType;
 };
 
 export const routerInfos: RouterInfo[] = [
@@ -17,12 +16,12 @@ export const routerInfos: RouterInfo[] = [
     index: true,
     path: "/",
     Component: Me,
-    NavIcon: PersonIcon,
+    NavIcon: User,
   },
   {
     path: "/debug",
     Component: Debug,
-    NavIcon: CodeIcon,
+    NavIcon: Bug,
   },
 ];
 

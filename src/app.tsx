@@ -1,4 +1,3 @@
-import { Box } from "@mui/material";
 import { Outlet } from "react-router";
 
 import { SideNav } from "./components/sidenav";
@@ -6,12 +5,12 @@ import { routerInfos } from "./router";
 
 function App() {
   return (
-    <Box sx={{ display: "flex" }}>
+    <div className="flex h-screen">
       <SideNav routerInfos={routerInfos} />
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+      <main className="flex-1 overflow-auto">
         <Outlet />
-      </Box>
-    </Box>
+      </main>
+    </div>
   );
 }
 

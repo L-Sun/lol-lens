@@ -11,6 +11,26 @@ export const translations = {
     zh: "LOL 未运行",
     en: "LOL is not running",
   },
+  "nav.me": {
+    zh: "个人页面",
+    en: "Me",
+  },
+  "nav.debug": {
+    zh: "调试页面",
+    en: "Debug",
+  },
+  "page.me.title": {
+    zh: "个人页面",
+    en: "Me",
+  },
+  "page.me.description": {
+    zh: "这是个人信息页面",
+    en: "This is the personal information page",
+  },
+  "page.debug.title": {
+    zh: "调试页面",
+    en: "Debug",
+  },
 } as const;
 
 type TranslationValue = {
