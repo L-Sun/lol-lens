@@ -7,13 +7,13 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useI18n } from "@/i18n";
+import { useI18n } from "@/hooks";
 
-import { RouterInfo } from "../router";
+import { NavInfo } from "../router";
 import { LolStatusIndicator } from "./lol-status-indicator";
 
 type SideNavProps = {
-  routerInfos: RouterInfo[];
+  routerInfos: NavInfo[];
 };
 
 export function SideNav({ routerInfos }: SideNavProps) {

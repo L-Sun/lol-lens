@@ -1,6 +1,5 @@
 import * as i18n from "i18next";
-import { useMemo } from "react";
-import { initReactI18next, useTranslation } from "react-i18next";
+import { initReactI18next } from "react-i18next";
 
 export const translations = {
   "com.lol.status.running": {
@@ -19,21 +18,19 @@ export const translations = {
     zh: "调试页面",
     en: "Debug",
   },
-  "page.me.title": {
-    zh: "个人页面",
-    en: "Me",
-  },
-  "page.me.description": {
-    zh: "这是个人信息页面",
-    en: "This is the personal information page",
-  },
   "page.debug.title": {
     zh: "调试页面",
     en: "Debug",
   },
+  "page.user.loading": {
+    zh: "加载中...",
+    en: "Loading...",
+  },
 } as const;
 
-type TranslationValue = {
+export type TranslationKey = keyof typeof translations;
+
+export type TranslationValue = {
   [K in keyof typeof translations]: () => string;
 };
 
@@ -72,17 +69,3 @@ await i18n
     },
   });
 export default i18n;
-
-export function useI18n() {
-  const { t: _t } = useTranslation();
-
-  const t = useMemo(() => {
-    return new Proxy({} as TranslationValue, {
-      get: (_, key: keyof typeof translations) => {
-        return () => _t(key);
-      },
-    });
-  }, [_t]);
-
-  return { t };
-}

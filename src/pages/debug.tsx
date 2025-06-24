@@ -1,26 +1,26 @@
-import ReactJsonView from "@microlink/react-json-view";
-
+import { LcuApiTester, LcuResourceViewer } from "@/components/lcu-api-tester";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useI18n } from "@/i18n";
+import { useI18n } from "@/hooks";
 
 export function Debug() {
   const { t } = useI18n();
 
-  const debugData = {
-    app: "LOL Lens",
-    version: "1.0.0",
-    status: "running",
-    timestamp: new Date().toISOString(),
-  };
-
   return (
-    <div className="p-6">
+    <div className="space-y-6 p-6">
       <Card>
         <CardHeader>
           <CardTitle>{t["page.debug.title"]()}</CardTitle>
         </CardHeader>
         <CardContent>
-          <ReactJsonView src={debugData} />
+          <LcuApiTester />
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>LCU Resource Viewer</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <LcuResourceViewer />
         </CardContent>
       </Card>
     </div>

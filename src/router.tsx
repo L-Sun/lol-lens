@@ -2,26 +2,29 @@ import { Bug, User } from "lucide-react";
 import { ComponentType } from "react";
 import { createBrowserRouter } from "react-router";
 
-import App from "./app";
-import { Debug } from "./pages/debug";
-import { Me } from "./pages/me";
+import App from "@/app";
+import { type TranslationKey } from "@/i18n";
+import { Debug } from "@/pages/debug";
+import { UserInfo } from "@/pages/user";
 
-export type RouterInfo = Parameters<typeof createBrowserRouter>[0][number] & {
+export type NavInfo = Parameters<typeof createBrowserRouter>[0][number] & {
   path: string;
   NavIcon?: ComponentType;
+  tooltip?: TranslationKey;
 };
 
-export const routerInfos: RouterInfo[] = [
+export const navInfos: NavInfo[] = [
   {
-    index: true,
-    path: "/",
-    Component: Me,
+    path: "/me",
+    Component: UserInfo,
     NavIcon: User,
+    tooltip: "nav.debug",
   },
   {
     path: "/debug",
     Component: Debug,
     NavIcon: Bug,
+    tooltip: "nav.debug",
   },
 ];
 
@@ -29,6 +32,12 @@ export const router = createBrowserRouter([
   {
     path: "/",
     Component: App,
-    children: routerInfos,
+    children: [
+      ...navInfos,
+      {
+        path: "/user/:userId",
+        Component: UserInfo,
+      },
+    ],
   },
 ]);

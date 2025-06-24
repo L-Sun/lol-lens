@@ -1,17 +1,20 @@
+import { useContext } from "react";
+
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useLOLRunningState } from "@/hooks";
-import { useI18n } from "@/i18n";
+import { useI18n } from "@/hooks";
+import { LcuInfoContext } from "@/lcu/context";
 
 export function LolStatusIndicator() {
-  const isLolRunning = useLOLRunningState();
+  const { running } = useContext(LcuInfoContext);
+
   const { t } = useI18n();
 
-  const statusText = isLolRunning
+  const statusText = running
     ? t["com.lol.status.running"]()
     : t["com.lol.status.not-running"]();
 
@@ -21,7 +24,7 @@ export function LolStatusIndicator() {
         <TooltipTrigger className="flex h-6 w-6 items-center justify-center">
           <div
             className={`h-2 w-2 rounded-full ${
-              isLolRunning ? "bg-green-500" : "bg-muted-foreground"
+              running ? "bg-green-500" : "bg-muted-foreground"
             }`}
           />
         </TooltipTrigger>

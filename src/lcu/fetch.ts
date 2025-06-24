@@ -1,22 +1,20 @@
 import { fetch as tauriFetch } from "@tauri-apps/plugin-http";
 
-import { LcuInfo } from "./types";
+import { LcuPortToken } from "./types";
 
 export async function fetch(
   endpoint: string,
-  info: LcuInfo,
+  portToken: LcuPortToken,
   init?: RequestInit
 ) {
-  const response = await tauriFetch(
-    `https://127.0.0.1:${info.port}${endpoint}`,
-    {
-      ...init,
-      headers: {
-        Authorization: `Basic ${info.token}`,
-        ...init?.headers,
-      },
-    }
-  );
+  const { port, token } = portToken;
+  const response = await tauriFetch(`https://127.0.0.1:${port}${endpoint}`, {
+    ...init,
+    headers: {
+      Authorization: `Basic ${token}`,
+      ...init?.headers,
+    },
+  });
 
   return response;
 }
