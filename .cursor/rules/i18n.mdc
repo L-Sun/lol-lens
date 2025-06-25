@@ -1,0 +1,8 @@
+---
+description: 当要展示字符串时，需要i18n化
+globs: 
+alwaysApply: false
+---
+- 在 [i18n.ts](mdc:src/i18n.ts) 中定义 
+
+- 使用 [hooks.ts](mdc:src/hooks.ts) 中的 `useI18n` 的 `t['key']()` 来展示
