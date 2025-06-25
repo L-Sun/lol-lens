@@ -12,7 +12,7 @@ function App() {
     <LcuInfoContext.Provider value={lcuInfo}>
       <div className="flex h-screen">
         <SideNav routerInfos={navInfos} />
-        <main className="flex-1 overflow-auto scrollbar-hide">
+        <main className="p-6 flex-1 overflow-auto scrollbar-hide">
           <Outlet />
         </main>
       </div>

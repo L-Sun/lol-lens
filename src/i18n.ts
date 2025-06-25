@@ -26,6 +26,18 @@ export const translations = {
     zh: "加载中...",
     en: "Loading...",
   },
+  "page.user.error": {
+    zh: "加载用户数据时出错",
+    en: "Error loading user data",
+  },
+  "page.user.lol-not-started": {
+    zh: "LOL未启动",
+    en: "LOL not started",
+  },
+  "page.user.user-not-found": {
+    zh: "用户未找到",
+    en: "User not found",
+  },
 } as const;
 
 export type TranslationKey = keyof typeof translations;

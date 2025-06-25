@@ -84,7 +84,6 @@ export function useLcuApi<E extends Endpoint>(
     {
       ...options,
       refreshDeps: [info, ...(options?.refreshDeps ?? [])],
-      ready: !!info.running && (options?.ready ?? true),
     }
   );
 }
@@ -109,7 +108,6 @@ export function useLcuResource(
     {
       ...options,
       refreshDeps: [info, ...(options?.refreshDeps ?? [])],
-      ready: !!info.running && (options?.ready ?? true),
       cacheKey: options?.cacheKey ?? url,
     }
   );
@@ -120,7 +118,7 @@ export function useLcuWebSocket() {
 
   const { data: websocket } = useRequest(
     async () => {
-      if (!info.running) return;
+      if (!info.running) throw new Error("LCU is not running");
       return LcuWebSocket.connect(info);
     },
     {
@@ -167,7 +165,6 @@ export function useLcuCall(
         websocket,
         ...(options?.refreshDeps ? options.refreshDeps : []),
       ],
-      ready: !!websocket,
     }
   );
 }
