@@ -1,0 +1,5 @@
+---
+description: 多使用shadcn-ui，可以使用bun添加相应的组件
+globs: 
+alwaysApply: false
+---
