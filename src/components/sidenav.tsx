@@ -30,7 +30,6 @@ export function SideNav({ routerInfos }: SideNavProps) {
             const isActive = route.index
               ? pathname === "/"
               : pathname === route.path;
-            const title = route.index ? t["nav.me"]() : t["nav.debug"]();
 
             return (
               <Tooltip key={route.path}>
@@ -46,7 +45,7 @@ export function SideNav({ routerInfos }: SideNavProps) {
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent side="right">
-                  <p>{title}</p>
+                  <p>{t[route.tooltip]()}</p>
                 </TooltipContent>
               </Tooltip>
             );

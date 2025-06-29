@@ -38,6 +38,10 @@ export const translations = {
     zh: "用户未找到",
     en: "User not found",
   },
+  "nav.current-match": {
+    zh: "当前对局",
+    en: "Current Match",
+  },
 } as const;
 
 export type TranslationKey = keyof typeof translations;

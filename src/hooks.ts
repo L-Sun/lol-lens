@@ -1,63 +1,20 @@
-import { invoke } from "@tauri-apps/api/core";
-import { useInterval, useRequest, useUnmount } from "ahooks";
+import { useRequest } from "ahooks";
 import { useContext, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { translations, TranslationValue } from "@/i18n";
-import { LcuInfo, LcuInfoContext } from "@/lcu/context";
+import { EventName, EventPayload } from "@/lcu/events";
 import { fetch } from "@/lcu/fetch";
+import { LcuInfoContext, LcuWebSocketContext } from "@/lcu/provider";
+import { jsonSchema } from "@/lcu/types";
+
 import {
   Endpoint,
   EndpointReturnType,
-  EndpointSchema,
   getEndpointSchema,
-  jsonSchema,
-  LcuPortTokenSchema,
-} from "@/lcu/types";
-import { LcuWebSocket } from "@/lcu/ws";
+} from "./lcu/endpoints";
 
 type RequestOptions<TData> = Parameters<typeof useRequest<TData, []>>[1];
-
-export function useLcuInfo() {
-  const [info, setInfo] = useState<LcuInfo>({ running: false });
-  const [checking, setChecking] = useState(false);
-
-  useInterval(
-    () => {
-      if (checking) return;
-      setChecking(true);
-
-      (async () => {
-        const running = await invoke<boolean>("is_lol_running");
-        if (running === info.running) return;
-
-        if (running) {
-          const portToken = LcuPortTokenSchema.parse(
-            await invoke("get_lcu_port_token")
-          );
-          // test if the port is valid
-          fetch("/lol-summoner/v1/status", portToken)
-            .then(() => {
-              setInfo({ running, ...portToken });
-            })
-            .catch(() => {
-              setInfo({ running: false });
-            });
-        } else {
-          setInfo({ running: false });
-        }
-      })()
-        .catch(console.error)
-        .finally(() => {
-          setChecking(false);
-        });
-    },
-    1000,
-    { immediate: true }
-  );
-
-  return info;
-}
 
 export function useLcuApi<E extends Endpoint>(
   endpoint: E,
@@ -84,6 +41,7 @@ export function useLcuApi<E extends Endpoint>(
     {
       ...options,
       refreshDeps: [info, ...(options?.refreshDeps ?? [])],
+      ready: info.running && (options?.ready ?? true),
     }
   );
 }
@@ -109,50 +67,35 @@ export function useLcuResource(
       ...options,
       refreshDeps: [info, ...(options?.refreshDeps ?? [])],
       cacheKey: options?.cacheKey ?? url,
+      ready: info.running && (options?.ready ?? true),
     }
   );
 }
 
-export function useLcuWebSocket() {
-  const info = useContext(LcuInfoContext);
+export function useLcuEvent<E extends EventName>(event: E) {
+  const websocket = useContext(LcuWebSocketContext);
 
-  const { data: websocket } = useRequest(
-    async () => {
-      if (!info.running) throw new Error("LCU is not running");
-      return LcuWebSocket.connect(info);
-    },
-    {
-      refreshDeps: [info],
-      ready: !!info.running,
-      cacheKey: "lcu_websocket",
-    }
-  );
-
-  useUnmount(() => {
-    websocket?.close();
-  });
-
-  return websocket;
-}
-
-export function useLcuEvent(event: string, callback: (data: unknown) => void) {
-  const websocket = useLcuWebSocket();
+  const [data, setData] = useState<EventPayload<E> | undefined>(undefined);
 
   useEffect(() => {
     if (!websocket) return;
 
-    const disposable = websocket.subscribe(event, callback);
+    const disposable = websocket.subscribe(event, (data) => {
+      setData(data);
+    });
     return () => {
       disposable();
     };
-  }, [websocket, event, callback]);
+  }, [websocket, event]);
+
+  return data;
 }
 
-export function useLcuCall(
-  cmd: Endpoint,
-  options?: RequestOptions<EndpointSchema<Endpoint>>
+export function useLcuCall<E extends Endpoint>(
+  cmd: E,
+  options?: RequestOptions<EndpointReturnType<E>>
 ) {
-  const websocket = useLcuWebSocket();
+  const websocket = useContext(LcuWebSocketContext);
 
   return useRequest(
     async () => {

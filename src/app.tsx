@@ -1,22 +1,19 @@
 import { Outlet } from "react-router";
 
 import { SideNav } from "@/components/sidenav";
-import { useLcuInfo } from "@/hooks";
-import { LcuInfoContext } from "@/lcu/context";
+import { LcuProvider } from "@/lcu/provider";
 import { navInfos } from "@/router";
 
 function App() {
-  const lcuInfo = useLcuInfo();
-
   return (
-    <LcuInfoContext.Provider value={lcuInfo}>
+    <LcuProvider>
       <div className="flex h-screen">
         <SideNav routerInfos={navInfos} />
         <main className="p-6 flex-1 overflow-auto scrollbar-hide">
           <Outlet />
         </main>
       </div>
-    </LcuInfoContext.Provider>
+    </LcuProvider>
   );
 }
 

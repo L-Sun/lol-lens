@@ -51,9 +51,13 @@ export function LcuResourceViewer() {
   );
   const [imageUrl, setImageUrl] = useState<string | null>(null);
 
-  const { data, error, loading, run } = useLcuResource(endpoint, {
-    manual: true,
-  });
+  const { data, error, loading, run } = useLcuResource(
+    endpoint,
+    {},
+    {
+      manual: true,
+    }
+  );
 
   useEffect(() => {
     if (data) {

@@ -7,7 +7,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useI18n } from "@/hooks";
-import { LcuInfoContext } from "@/lcu/context";
+import { LcuInfoContext } from "@/lcu/provider";
 
 export function LolStatusIndicator() {
   const { running } = useContext(LcuInfoContext);
