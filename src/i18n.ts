@@ -162,6 +162,14 @@ export const translations = {
     zh: "辅助",
     en: "Support",
   },
+  "page.current-match.level": {
+    zh: "等级",
+    en: "Level",
+  },
+  "page.current-match.loading": {
+    zh: "加载中...",
+    en: "Loading...",
+  },
 } as const;
 
 export type TranslationKey = keyof typeof translations;

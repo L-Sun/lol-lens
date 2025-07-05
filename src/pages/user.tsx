@@ -13,9 +13,8 @@ export function UserInfo() {
   const { data, loading, error } = useLcuApi(
     pathname === "/me"
       ? "/lol-summoner/v1/current-summoner"
-      : `/lol-summoner/v1/summoners/${userId}`,
-    {},
-    { loadingDelay: 1000 }
+      : "/lol-summoner/v1/summoners/:id",
+    userId ? { params: { id: userId } } : undefined
   );
 
   if (!data || loading || error) {

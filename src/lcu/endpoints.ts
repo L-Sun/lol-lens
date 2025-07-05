@@ -1,5 +1,5 @@
-import { match } from "path-to-regexp";
 import { z } from "zod";
+import { compile as _compile } from "path-to-regexp";
 
 import {
   jsonSchema,
@@ -8,69 +8,80 @@ import {
   summonerStatusSchema,
 } from "@/lcu/types";
 
-export const endpointSchemas = {
-  "/help": jsonSchema,
-  "/lol-summoner/v1/current-summoner": summonerSchema,
-  "/lol-summoner/v1/status": summonerStatusSchema,
-  "/lol-summoner/v1/summoners/{id}": summonerSchema,
-  "/lol-summoner/v2/summoners/puuid/{puuid}": summonerSchema,
-  "/lol-match-history/v1/products/lol/current-summoner/matches": matchesSchema,
-} as const;
-
-type _Endpoint = keyof typeof endpointSchemas;
-type ExtractMatcher<T> = T extends `${string}{${string}}${string}` ? T : never;
-type ExcludeMatcher<T> = T extends `${string}{${string}}${string}` ? never : T;
-type NoSlash<T extends string> = T extends `${string}/${string}` ? never : T;
-type ToDynamicPath<T extends string> =
-  T extends `${infer Start}/{${infer Param}}${infer End}`
-    ? Param extends NoSlash<Param>
-      ? `${Start}/${NoSlash<string>}${ToDynamicPath<End>}`
-      : never
-    : T;
-
-export type DynamicEndpoint = ToDynamicPath<ExtractMatcher<_Endpoint>>;
-export type StaticEndpoint = ExcludeMatcher<_Endpoint>;
-export type Endpoint = StaticEndpoint | DynamicEndpoint;
-type MatcherToDynamicMap = {
-  [Key in ExtractMatcher<_Endpoint> as ToDynamicPath<Key>]: Key;
+type Endpoint<
+  P extends string,
+  ReturnSchema extends z.ZodTypeAny,
+  QuerySchema extends z.ZodTypeAny
+> = {
+  method: "GET" | "POST";
+  path: P;
+  returnSchema: ReturnSchema;
+  paramsSchema?: QuerySchema;
 };
 
-export type EndpointSchema<E extends Endpoint> =
-  (typeof endpointSchemas)[E extends DynamicEndpoint
-    ? MatcherToDynamicMap[E]
-    : E];
+class EndpointBuilder<T extends {} = {}> {
+  private endpoints: T = {} as T;
 
-export type EndpointReturnType<E extends Endpoint> = z.infer<EndpointSchema<E>>;
-const matcherRegex = /\{[^}]+\}/g;
-const matchers = new Map(
-  Object.entries(endpointSchemas)
-    .filter(([endpoint]) => matcherRegex.test(endpoint))
-    .map(([endpoint, schema]) => {
-      const matcher = match(endpoint.replace(matcherRegex, ":$1"));
-      return [matcher, schema] as [
-        typeof matcher,
-        EndpointSchema<DynamicEndpoint>
-      ];
-    })
-);
-function isStaticEndpoint(endpoint: string): endpoint is StaticEndpoint {
-  return !matcherRegex.test(endpoint) && endpoint in endpointSchemas;
-}
+  constructor() {}
 
-export function getEndpointSchema<E extends Endpoint>(
-  endpoint: E
-): EndpointSchema<E> | null;
+  add<
+    P extends string,
+    ReturnSchema extends z.ZodTypeAny,
+    QuerySchema extends z.ZodTypeAny
+  >(
+    method: "GET" | "POST",
+    path: P,
+    returnSchema: ReturnSchema,
+    paramsSchema?: QuerySchema
+  ) {
+    const endpoint = {
+      method,
+      path,
+      returnSchema,
+      paramsSchema,
+    } satisfies Endpoint<P, ReturnSchema, QuerySchema>;
 
-export function getEndpointSchema(endpoint: string): unknown;
+    this.endpoints = {
+      ...this.endpoints,
+      [path]: endpoint,
+    };
 
-export function getEndpointSchema(endpoint: string) {
-  if (isStaticEndpoint(endpoint)) {
-    return endpointSchemas[endpoint];
+    return this as unknown as EndpointBuilder<{
+      [K in keyof T | P]: K extends P
+        ? typeof endpoint
+        : K extends keyof T
+        ? T[K]
+        : never;
+    }>;
   }
 
-  for (const [matcher, schema] of matchers) {
-    if (matcher(endpoint)) return schema;
+  build() {
+    return this.endpoints;
   }
-
-  return null;
 }
+
+export const endpoints = new EndpointBuilder()
+  .add("GET", "/help", jsonSchema)
+  .add("GET", "/lol-summoner/v1/status", summonerStatusSchema)
+  .add("GET", "/lol-summoner/v1/summoners/:id", summonerSchema)
+  .add("GET", "/lol-summoner/v2/summoners/puuid/:puuid", summonerSchema)
+  .add(
+    "GET",
+    "/lol-match-history/v1/products/lol/current-summoner/matches",
+    matchesSchema
+  )
+  .add(
+    "GET",
+    "/lol-match-history/v1/products/lol/:puuid/matches",
+    matchesSchema
+  )
+  .add("GET", "/lol-summoner/v1/current-summoner", summonerSchema)
+  .build();
+
+export type Endpoints = keyof typeof endpoints;
+export type EndpointReturnType<E extends Endpoints> = z.infer<
+  (typeof endpoints)[E]["returnSchema"]
+>;
+export type EndpointParams<E extends Endpoints> = z.infer<
+  NonNullable<(typeof endpoints)[E]["paramsSchema"]>
+>;

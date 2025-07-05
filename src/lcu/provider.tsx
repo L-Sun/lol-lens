@@ -41,13 +41,13 @@ const LcuInfoProvider = ({ children }: { children: React.ReactNode }) => {
             await invoke("get_lcu_port_token")
           );
           // test if the port is valid
-          fetch("/lol-summoner/v1/status", portToken)
-            .then(() => {
-              setInfo({ running, ...portToken });
-            })
-            .catch(() => {
-              setInfo({ running: false });
-            });
+          try {
+            await fetch("/lol-summoner/v1/status", portToken);
+            setInfo({ running, ...portToken });
+          } catch (error) {
+            console.error(error);
+            setInfo({ running: false });
+          }
         } else {
           setInfo({ running: false });
         }

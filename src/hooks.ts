@@ -4,44 +4,35 @@ import { useTranslation } from "react-i18next";
 
 import { translations, TranslationValue } from "@/i18n";
 import { EventName, EventPayload } from "@/lcu/events";
-import { fetch } from "@/lcu/fetch";
+import { endpointFetch, fetch } from "@/lcu/fetch";
 import { LcuInfoContext, LcuWebSocketContext } from "@/lcu/provider";
-import { jsonSchema } from "@/lcu/types";
 
-import {
-  Endpoint,
-  EndpointReturnType,
-  getEndpointSchema,
-} from "./lcu/endpoints";
+import { EndpointReturnType, Endpoints } from "./lcu/endpoints";
 
 type RequestOptions<TData> = Parameters<typeof useRequest<TData, []>>[1];
 
-export function useLcuApi<E extends Endpoint>(
+export function useLcuApi<E extends Endpoints>(
   endpoint: E,
-  init?: RequestInit,
-  options?: RequestOptions<EndpointReturnType<E>>
+  options?: {
+    params?: Parameters<typeof endpointFetch<E>>[2];
+    query?: Parameters<typeof endpointFetch<E>>[3];
+    init?: Parameters<typeof endpointFetch<E>>[4];
+    hookOptions?: RequestOptions<EndpointReturnType<E>>;
+  }
 ) {
+  const { params, query, init, hookOptions } = options ?? {};
+
   const info = useContext(LcuInfoContext);
 
   return useRequest(
     async () => {
       if (!info.running) throw new Error("LCU is not running");
-      const response = await fetch(endpoint, info, init);
-      const contentType = response.headers.get("Content-Type");
-
-      if (!contentType?.includes("application/json")) {
-        throw new Error(`Unsupported content type: ${contentType}`);
-      }
-
-      const schema = getEndpointSchema(endpoint) ?? jsonSchema;
-      const result: EndpointReturnType<E> = schema.parse(await response.json());
-
-      return result;
+      return endpointFetch(endpoint, info, params, query, init);
     },
     {
-      ...options,
-      refreshDeps: [info, ...(options?.refreshDeps ?? [])],
-      ready: info.running && (options?.ready ?? true),
+      ...hookOptions,
+      refreshDeps: [info, ...(hookOptions?.refreshDeps ?? [])],
+      ready: info.running && (hookOptions?.ready ?? true),
     }
   );
 }
@@ -91,7 +82,7 @@ export function useLcuEvent<E extends EventName>(event: E) {
   return data;
 }
 
-export function useLcuCall<E extends Endpoint>(
+export function useLcuCall<E extends Endpoints>(
   cmd: E,
   options?: RequestOptions<EndpointReturnType<E>>
 ) {
@@ -124,4 +115,24 @@ export function useI18n() {
   }, [_t]);
 
   return { t };
+}
+
+export function useChampionIcon(championId: number) {
+  return useLcuResource(
+    `/lol-game-data/assets/v1/champion-icons/${championId}.png`,
+    undefined,
+    {
+      cacheKey: `champion-icon-${championId}`,
+    }
+  );
+}
+
+export function useProfileIcon(iconId: number) {
+  return useLcuResource(
+    `/lol-game-data/assets/v1/profile-icons/${iconId}.jpg`,
+    undefined,
+    {
+      cacheKey: `profile-icon-${iconId}`,
+    }
+  );
 }

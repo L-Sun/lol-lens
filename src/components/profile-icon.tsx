@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 
-import { useLcuResource } from "@/hooks";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useProfileIcon } from "@/hooks";
 import { cn } from "@/utils/tailwind";
 
 interface ProfileIconProps
-  extends Omit<React.ImgHTMLAttributes<HTMLImageElement>, "src" | "alt"> {
+  extends Omit<React.ComponentProps<typeof Avatar>, "children"> {
   profileIconId: number;
 }
 
@@ -13,9 +14,7 @@ export function ProfileIcon({
   className,
   ...props
 }: ProfileIconProps) {
-  const { data, error, loading } = useLcuResource(
-    `/lol-game-data/assets/v1/profile-icons/${profileIconId}.jpg`
-  );
+  const { data, error, loading } = useProfileIcon(profileIconId);
 
   const [imageUrl, setImageUrl] = useState<string | null>(null);
 
@@ -27,30 +26,14 @@ export function ProfileIcon({
     }
   }, [data]);
 
-  if (error) {
-    return (
-      <div
-        className={cn("rounded-full bg-destructive/50", className)}
-        {...props}
-      />
-    );
-  }
-
-  if (loading || !imageUrl) {
-    return (
-      <div
-        className={cn("animate-pulse rounded-full bg-muted", className)}
-        {...props}
-      />
-    );
-  }
-
   return (
-    <img
-      src={imageUrl}
-      alt={`Profile Icon ${profileIconId}`}
-      className={cn("rounded-full", className)}
-      {...props}
-    />
+    <Avatar className={cn(className)} {...props}>
+      {!error && !loading && imageUrl && (
+        <AvatarImage src={imageUrl} alt={`Profile Icon ${profileIconId}`} />
+      )}
+      <AvatarFallback className="bg-destructive/50">
+        {error ? "!" : "..."}
+      </AvatarFallback>
+    </Avatar>
   );
 }

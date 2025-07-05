@@ -52,7 +52,12 @@ export const teamMemberSchema = z.object({
 });
 
 export const teamSchema = z.object({
-  bans: z.array(z.number().int()),
+  bans: z.array(
+    z.object({
+      championId: z.number().int(),
+      pickTurn: z.number().int(),
+    })
+  ),
   baronKills: z.number().int(),
   dominionVictoryScore: z.number().int(),
   dragonKills: z.number().int(),
@@ -86,6 +91,7 @@ export const participantSchema = participantIdentitySchema
   .extend({
     championId: z.number().int(),
     stats: z.object({
+      win: z.boolean(),
       champLevel: z.number().int(),
       kills: z.number().int(),
       deaths: z.number().int(),

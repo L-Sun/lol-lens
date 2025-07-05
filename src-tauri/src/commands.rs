@@ -34,6 +34,11 @@ pub async fn get_lcu_port_token() -> Result<serde_json::Value, String> {
         }
     }
 
+    // loop until file exists
+    while !std::fs::metadata(&tmp_path).is_ok() {
+        std::thread::sleep(std::time::Duration::from_millis(100));
+    }
+
     let command_info = std::fs::read_to_string(&tmp_path).unwrap();
     std::fs::remove_file(&tmp_path).unwrap();
 
@@ -62,7 +67,7 @@ pub async fn get_lcu_port_token() -> Result<serde_json::Value, String> {
 }
 
 #[tauri::command]
-pub fn is_lol_running() -> bool {
+pub async fn is_lol_running() -> bool {
     use sysinfo::System;
 
     let sys = System::new_all();

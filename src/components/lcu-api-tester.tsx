@@ -10,7 +10,9 @@ export function LcuApiTester() {
 
   // @ts-expect-error: Allow using a string for the endpoint
   const { data, error, loading, run } = useLcuApi(endpoint, {
-    manual: true,
+    hookOptions: {
+      manual: true,
+    },
   });
 
   return (

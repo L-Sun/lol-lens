@@ -4,7 +4,7 @@ import { noop, Subject } from "rxjs";
 import { EventName, EventPayload, getEventSchema } from "@/lcu/events";
 import { DisposableGroup } from "@/utils";
 
-import { Endpoint, EndpointReturnType, getEndpointSchema } from "./endpoints";
+import { EndpointReturnType, Endpoints, endpoints } from "./endpoints";
 import {
   jsonSchema,
   LcuMessage,
@@ -166,7 +166,7 @@ export class LcuWebSocket {
     };
   }
 
-  async call<E extends Endpoint>(endpoint: E): Promise<EndpointReturnType<E>> {
+  async call<E extends Endpoints>(endpoint: E): Promise<EndpointReturnType<E>> {
     const requestId = Math.random().toString(36).substring(2, 15);
 
     const result = new Promise<EndpointReturnType<E>>((resolve, reject) => {
@@ -174,7 +174,7 @@ export class LcuWebSocket {
         ({ requestId: resultRequestId, data, status }) => {
           if (requestId === resultRequestId) {
             if (status === "success") {
-              const schema = getEndpointSchema(endpoint) ?? jsonSchema;
+              const schema = endpoints[endpoint].returnSchema ?? jsonSchema;
               resolve(schema.parse(data));
             } else {
               reject(

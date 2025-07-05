@@ -1,6 +1,7 @@
 import { Link, useLocation } from "react-router";
 
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import {
   Tooltip,
   TooltipContent,
@@ -53,7 +54,9 @@ export function SideNav({ routerInfos }: SideNavProps) {
         </TooltipProvider>
       </nav>
 
-      <div className="flex justify-center border-t p-2">
+      <Separator />
+
+      <div className="flex justify-center p-2">
         <LolStatusIndicator />
       </div>
     </div>
