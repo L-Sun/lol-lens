@@ -2,6 +2,7 @@ import { z } from "zod";
 import { compile as _compile } from "path-to-regexp";
 
 import {
+  blobSchema,
   jsonSchema,
   matchesSchema,
   summonerSchema,
@@ -16,7 +17,7 @@ type Endpoint<
   method: "GET" | "POST";
   path: P;
   returnSchema: ReturnSchema;
-  paramsSchema?: QuerySchema;
+  querySchema?: QuerySchema;
 };
 
 class EndpointBuilder<T extends {} = {}> {
@@ -32,13 +33,13 @@ class EndpointBuilder<T extends {} = {}> {
     method: "GET" | "POST",
     path: P,
     returnSchema: ReturnSchema,
-    paramsSchema?: QuerySchema
+    querySchema?: QuerySchema
   ) {
     const endpoint = {
       method,
       path,
       returnSchema,
-      paramsSchema,
+      querySchema,
     } satisfies Endpoint<P, ReturnSchema, QuerySchema>;
 
     this.endpoints = {
@@ -76,12 +77,28 @@ export const endpoints = new EndpointBuilder()
     matchesSchema
   )
   .add("GET", "/lol-summoner/v1/current-summoner", summonerSchema)
+  .add("GET", "/lol-game-data/assets/v1/champion-icons/:id.png", blobSchema)
+  .add("GET", "/lol-game-data/assets/v1/profile-icons/:id.jpg", blobSchema)
   .build();
 
 export type Endpoints = keyof typeof endpoints;
 export type EndpointReturnType<E extends Endpoints> = z.infer<
   (typeof endpoints)[E]["returnSchema"]
 >;
-export type EndpointParams<E extends Endpoints> = z.infer<
-  NonNullable<(typeof endpoints)[E]["paramsSchema"]>
+export type EndpointQueryType<E extends Endpoints> = z.infer<
+  NonNullable<(typeof endpoints)[E]["querySchema"]>
 >;
+
+type ExtractParams<T extends string> =
+  T extends `${string}/:${infer Param}/${infer Rest}`
+    ? Param | ExtractParams<`/${Rest}`>
+    : T extends `${string}/:${infer Param}.${infer _}`
+    ? Param
+    : T extends `${string}/:${infer Param}`
+    ? Param
+    : never;
+
+type ParamsToRecord<T extends string> = {
+  [K in ExtractParams<T>]: string;
+};
+export type EndpointParamsType<E extends Endpoints> = ParamsToRecord<E>;

@@ -8,15 +8,16 @@ import {
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useLcuApi } from "@/hooks";
-import { summonerSchema } from "@/lcu/types";
+import { teamMemberSchema, summonerSchema } from "@/lcu/types";
 import { ProfileIcon } from "@/components/profile-icon";
 import { PlayerWinLoseBadge } from "@/components/player-win-lose-badge";
 
 type PlayerCardProps = {
+  championId: z.infer<typeof teamMemberSchema>["championId"];
   puuid: z.infer<typeof summonerSchema>["puuid"];
 };
 
-export function PlayerCard({ puuid }: PlayerCardProps) {
+export function PlayerCard({ championId, puuid }: PlayerCardProps) {
   const { data: summonerData, loading } = useLcuApi(
     "/lol-summoner/v2/summoners/puuid/:puuid",
     { params: { puuid } }

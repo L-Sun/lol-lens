@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useProfileIcon } from "@/hooks";
+import { useLcuApi } from "@/hooks";
 import { cn } from "@/utils/tailwind";
 
 interface ProfileIconProps
@@ -14,7 +14,10 @@ export function ProfileIcon({
   className,
   ...props
 }: ProfileIconProps) {
-  const { data, error, loading } = useProfileIcon(profileIconId);
+  const { data, error, loading } = useLcuApi(
+    "/lol-game-data/assets/v1/profile-icons/:id.jpg",
+    { params: { id: profileIconId.toString() } }
+  );
 
   const [imageUrl, setImageUrl] = useState<string | null>(null);
 

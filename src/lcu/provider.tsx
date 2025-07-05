@@ -2,7 +2,7 @@ import { invoke } from "@tauri-apps/api/core";
 import { useInterval, useRequest, useUnmount } from "ahooks";
 import { createContext, useContext, useState } from "react";
 
-import { fetch } from "@/lcu/fetch";
+import { endpointFetch } from "@/lcu/fetch";
 import { LcuWebSocket } from "@/lcu/ws";
 
 import { LcuPortToken, LcuPortTokenSchema } from "./types";
@@ -42,7 +42,7 @@ const LcuInfoProvider = ({ children }: { children: React.ReactNode }) => {
           );
           // test if the port is valid
           try {
-            await fetch("/lol-summoner/v1/status", portToken);
+            await endpointFetch("/lol-summoner/v1/status", portToken);
             setInfo({ running, ...portToken });
           } catch (error) {
             console.error(error);

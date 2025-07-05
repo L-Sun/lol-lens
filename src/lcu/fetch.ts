@@ -1,15 +1,15 @@
 import { fetch as tauriFetch } from "@tauri-apps/plugin-http";
+import { compile } from "path-to-regexp";
 
 import {
-  EndpointParams,
+  EndpointParamsType,
+  EndpointQueryType,
   EndpointReturnType,
-  endpoints,
   Endpoints,
+  endpoints,
 } from "@/lcu/endpoints";
 
-import { LcuPortToken } from "./types";
-import { compile } from "path-to-regexp";
-import { z } from "zod";
+import { blobSchema, LcuPortToken } from "./types";
 
 export async function fetch(
   endpoint: string,
@@ -28,22 +28,11 @@ export async function fetch(
   return response;
 }
 
-type ExtractParams<T extends string> =
-  T extends `${string}/:${infer Param}/${infer Rest}`
-    ? Param | ExtractParams<`/${Rest}`>
-    : T extends `${string}/:${infer Param}`
-    ? Param
-    : never;
-
-export type ParamsToRecord<T extends string> = {
-  [K in ExtractParams<T>]: string;
-};
-
 export async function endpointFetch<E extends Endpoints>(
   endpoint: E,
   portToken: LcuPortToken,
-  params?: EndpointParams<E>,
-  query?: z.infer<NonNullable<(typeof endpoints)[E]["paramsSchema"]>>,
+  params?: EndpointParamsType<E>,
+  query?: EndpointQueryType<E>,
   init?: RequestInit
 ): Promise<EndpointReturnType<E>> {
   if (!(endpoint in endpoints)) {
@@ -52,14 +41,14 @@ export async function endpointFetch<E extends Endpoints>(
 
   const { port, token } = portToken;
 
-  const path = compile<ParamsToRecord<E>>(endpoint)(params);
+  const path = compile<EndpointParamsType<E>>(endpoint)(params);
 
-  let url = new URL(`https://127.0.0.1:${port}${path}`);
+  const url = new URL(`https://127.0.0.1:${port}${path}`);
   const method = endpoints[endpoint].method;
   if (query && method === "GET") {
-    if (endpoints[endpoint].paramsSchema) {
-      const parsedParams = endpoints[endpoint].paramsSchema.parse(query);
-      query = parsedParams;
+    const querySchema = endpoints[endpoint].querySchema;
+    if (querySchema) {
+      querySchema.parse(query);
     }
     const queryString = new URLSearchParams(query).toString();
     url.search = queryString;
@@ -75,12 +64,14 @@ export async function endpointFetch<E extends Endpoints>(
   });
 
   const contentType = response.headers.get("Content-Type");
-  if (!contentType?.includes("application/json")) {
-    throw new Error(`Unsupported content type: ${contentType}`);
+
+  const returnSchema = endpoints[endpoint].returnSchema;
+  if (returnSchema === blobSchema) {
+    return returnSchema.parse(await response.blob());
+  } else {
+    if (!contentType?.includes("application/json")) {
+      throw new Error(`Unsupported content type: ${contentType}`);
+    }
+    return returnSchema.parse(await response.json());
   }
-
-  const data = await response.json();
-  console.log(data);
-
-  return endpoints[endpoint].returnSchema.parse(data);
 }

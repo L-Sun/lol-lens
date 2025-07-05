@@ -30,6 +30,8 @@ export const jsonSchema: z.ZodType<Json> = z.lazy(() =>
   z.union([literalSchema, z.array(jsonSchema), z.record(jsonSchema)])
 );
 
+export const blobSchema = z.instanceof(Blob);
+
 export const summonerSchema = z.object({
   gameName: z.string(),
   privacy: z.enum(["PUBLIC", "PRIVATE"]),

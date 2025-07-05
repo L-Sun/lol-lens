@@ -1,4 +1,4 @@
-import { LcuApiTester, LcuResourceViewer } from "@/components/lcu-api-tester";
+import { LcuApiTester } from "@/components/lcu-api-tester";
 import { LcuEventTester } from "@/components/lcu-event-tester";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useI18n } from "@/hooks";
@@ -16,14 +16,7 @@ export function Debug() {
           <LcuApiTester />
         </CardContent>
       </Card>
-      <Card>
-        <CardHeader>
-          <CardTitle>LCU Resource Viewer</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <LcuResourceViewer />
-        </CardContent>
-      </Card>
+
       <Card>
         <CardHeader>
           <CardTitle>LCU Event Tester</CardTitle>

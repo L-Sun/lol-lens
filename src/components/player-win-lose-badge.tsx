@@ -11,7 +11,7 @@ type PlayerWinLoseBadgeProps = {
 export function PlayerWinLoseBadge({ puuid }: PlayerWinLoseBadgeProps) {
   const { data: matchData, loading } = useLcuApi(
     "/lol-match-history/v1/products/lol/:puuid/matches",
-    { params: { puuid } }
+    { params: { puuid }, hookOptions: { cacheKey: puuid } }
   );
 
   const { wins, losses } = useMemo(() => {
