@@ -12,7 +12,11 @@ export function CurrentMatch() {
       <h2 className="text-2xl font-bold mb-6">当前对局</h2>
       <div className="grid grid-cols-2 gap-4">
         {allPlayers.map((player) => (
-          <PlayerCard key={player.puuid} puuid={player.puuid} />
+          <PlayerCard
+            key={player.puuid}
+            puuid={player.puuid}
+            championId={player.championId}
+          />
         ))}
       </div>
     </div>

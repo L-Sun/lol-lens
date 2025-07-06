@@ -1,7 +1,7 @@
 import { EyeOff } from "lucide-react";
 import { useLocation, useParams } from "react-router";
 
-import { ProfileIcon } from "@/components/profile-icon";
+import { LoLIcon } from "@/components/lol-icon";
 import { Card, CardContent } from "@/components/ui/card";
 import { useI18n, useLcuApi } from "@/hooks";
 
@@ -13,8 +13,8 @@ export function UserInfo() {
   const { data, loading, error } = useLcuApi(
     pathname === "/me"
       ? "/lol-summoner/v1/current-summoner"
-      : "/lol-summoner/v1/summoners/:id",
-    userId ? { params: { id: userId } } : undefined
+      : "/lol-summoner/v2/summoners/puuid/:puuid",
+    userId ? { params: { puuid: userId } } : undefined
   );
 
   if (!data || loading || error) {
@@ -38,10 +38,7 @@ export function UserInfo() {
     <Card>
       <CardContent className="flex flex-col items-center gap-6 p-12">
         <div className="relative">
-          <ProfileIcon
-            profileIconId={data.profileIconId}
-            className="h-32 w-32"
-          />
+          <LoLIcon profileIconId={data.profileIconId} className="size-32" />
           <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 rounded-full bg-card px-4 py-1 text-sm font-semibold shadow-lg flex items-center gap-1">
             {data.privacy === "PRIVATE" && (
               <EyeOff className="mr-1 h-4 w-4 text-muted-foreground" />

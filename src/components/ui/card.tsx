@@ -2,12 +2,22 @@ import * as React from "react";
 
 import { cn } from "@/utils";
 
-function Card({ className, ...props }: React.ComponentProps<"div">) {
+interface CardProps extends React.ComponentProps<"div"> {
+  clickable?: boolean;
+}
+
+function Card({ className, clickable = false, ...props }: CardProps) {
   return (
     <div
       data-slot="card"
       className={cn(
         "bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm",
+        clickable && [
+          "cursor-pointer transition-all duration-200",
+          "hover:shadow-lg hover:border-border hover:bg-card/80",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+          "active:scale-[0.98] active:shadow-sm",
+        ],
         className
       )}
       {...props}

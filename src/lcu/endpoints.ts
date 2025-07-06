@@ -74,7 +74,11 @@ export const endpoints = new EndpointBuilder()
   .add(
     "GET",
     "/lol-match-history/v1/products/lol/:puuid/matches",
-    matchesSchema
+    matchesSchema,
+    z.object({
+      begIndex: z.number().optional(),
+      endIndex: z.number().optional(),
+    })
   )
   .add("GET", "/lol-summoner/v1/current-summoner", summonerSchema)
   .add("GET", "/lol-game-data/assets/v1/champion-icons/:id.png", blobSchema)

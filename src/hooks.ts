@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import { translations, TranslationValue } from "@/i18n";
 import { EventName, EventPayload } from "@/lcu/events";
-import { endpointFetch, fetch } from "@/lcu/fetch";
+import { endpointFetch } from "@/lcu/fetch";
 import { LcuInfoContext, LcuWebSocketContext } from "@/lcu/provider";
 
 import {

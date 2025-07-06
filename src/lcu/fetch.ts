@@ -50,7 +50,13 @@ export async function endpointFetch<E extends Endpoints>(
     if (querySchema) {
       querySchema.parse(query);
     }
-    const queryString = new URLSearchParams(query).toString();
+    const queryString = new URLSearchParams(
+      Object.entries(query)
+        .filter(([, value]) => value !== undefined)
+        .map(([key, value]) => {
+          return [`${key}`, `${value}`];
+        })
+    ).toString();
     url.search = queryString;
   }
 
