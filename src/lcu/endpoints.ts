@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import {
+  assetItemSchema,
   blobSchema,
   jsonSchema,
   matchesSchema,
@@ -82,6 +83,7 @@ export const endpoints = new EndpointBuilder()
   .add("GET", "/lol-summoner/v1/current-summoner", summonerSchema)
   .add("GET", "/lol-game-data/assets/v1/champion-icons/:id.png", blobSchema)
   .add("GET", "/lol-game-data/assets/v1/profile-icons/:id.jpg", blobSchema)
+  .add("GET", "/lol-game-data/assets/v1/items.json", assetItemSchema.array())
   .build();
 
 export type Endpoints = keyof typeof endpoints;

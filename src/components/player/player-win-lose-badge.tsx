@@ -1,8 +1,9 @@
+import { useMemo } from "react";
+import { z } from "zod";
+
 import { Badge } from "@/components/ui/badge";
 import { useLcuApi } from "@/hooks";
 import { summonerSchema } from "@/lcu/types";
-import { useMemo } from "react";
-import { z } from "zod";
 
 type PlayerWinLoseBadgeProps = {
   puuid: z.infer<typeof summonerSchema>["puuid"];

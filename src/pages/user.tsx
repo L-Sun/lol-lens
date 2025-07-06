@@ -1,7 +1,8 @@
 import { EyeOff } from "lucide-react";
 import { useLocation, useParams } from "react-router";
 
-import { LoLIcon } from "@/components/lol-icon";
+import { ProfileIcon } from "@/components/lol-icon";
+import { PlayerMatchList } from "@/components/player/player-match-list";
 import { Card, CardContent } from "@/components/ui/card";
 import { useI18n, useLcuApi } from "@/hooks";
 
@@ -35,23 +36,29 @@ export function UserInfo() {
   }
 
   return (
-    <Card>
-      <CardContent className="flex flex-col items-center gap-6 p-12">
-        <div className="relative">
-          <LoLIcon profileIconId={data.profileIconId} className="size-32" />
-          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 rounded-full bg-card px-4 py-1 text-sm font-semibold shadow-lg flex items-center gap-1">
-            {data.privacy === "PRIVATE" && (
-              <EyeOff className="mr-1 h-4 w-4 text-muted-foreground" />
-            )}
-            {data.summonerLevel}
+    <>
+      <Card>
+        <CardContent className="flex flex-col items-center gap-6 p-12">
+          <div className="relative">
+            <ProfileIcon
+              profileIconId={data.profileIconId}
+              className="size-32"
+            />
+            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 rounded-full bg-card px-4 py-1 text-sm font-semibold shadow-lg flex items-center gap-1">
+              {data.privacy === "PRIVATE" && (
+                <EyeOff className="mr-1 h-4 w-4 text-muted-foreground" />
+              )}
+              {data.summonerLevel}
+            </div>
           </div>
-        </div>
-        <div className="text-center">
-          <div className="text-3xl font-bold">
-            {data.gameName}#{data.tagLine}
+          <div className="text-center">
+            <div className="text-3xl font-bold">
+              {data.gameName}#{data.tagLine}
+            </div>
           </div>
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+      <PlayerMatchList puuid={data.puuid} />
+    </>
   );
 }

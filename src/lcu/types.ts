@@ -151,3 +151,25 @@ export const LcuEventSchema = z.object({
   data: gameSessionSchema,
   uri: z.string(),
 });
+
+export const assetItemSchema = z.object({
+  id: z.number().int(),
+  name: z.string(),
+  description: z.string(),
+  active: z.boolean(),
+  inStore: z.boolean(),
+  from: z.array(z.number().int()),
+  to: z.array(z.number().int()),
+  categories: z.array(z.string()),
+  maxStacks: z.number().int(),
+  requiredChampion: z.string(),
+  requiredAlly: z.string(),
+  requiredBuffCurrencyName: z.string(),
+  requiredBuffCurrencyCost: z.number().int(),
+  specialRecipe: z.number().int(),
+  isEnchantment: z.boolean(),
+  price: z.number().int(),
+  priceTotal: z.number().int(),
+  displayInItemSets: z.boolean(),
+  iconPath: z.string(),
+});

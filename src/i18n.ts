@@ -170,6 +170,66 @@ export const translations = {
     zh: "加载中...",
     en: "Loading...",
   },
+  "match.champion": {
+    zh: "英雄",
+    en: "Champion",
+  },
+  "match.victory": {
+    zh: "胜利",
+    en: "Victory",
+  },
+  "match.defeat": {
+    zh: "失败",
+    en: "Defeat",
+  },
+  "match.level": {
+    zh: "等级",
+    en: "Level",
+  },
+  "match.kills": {
+    zh: "击杀",
+    en: "Kills",
+  },
+  "match.deaths": {
+    zh: "死亡",
+    en: "Deaths",
+  },
+  "match.assists": {
+    zh: "助攻",
+    en: "Assists",
+  },
+  "match.gold": {
+    zh: "金币",
+    en: "Gold",
+  },
+  "match.damage-dealt": {
+    zh: "伤害输出",
+    en: "Damage Dealt",
+  },
+  "match.damage-taken": {
+    zh: "伤害承受",
+    en: "Damage Taken",
+  },
+  "match.double-kills": {
+    zh: "双杀",
+    en: "Double Kills",
+  },
+  "match.triple-kills": {
+    zh: "三杀",
+    en: "Triple Kills",
+  },
+  "match.quadra-kills": {
+    zh: "四杀",
+    en: "Quadra Kills",
+  },
+  "match.penta-kills": {
+    zh: "五杀",
+    en: "Penta Kills",
+  },
+  "match.items": {
+    zh: "装备",
+    en: "Items",
+  },
 } as const;
 
 export type TranslationKey = keyof typeof translations;
