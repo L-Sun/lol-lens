@@ -10,7 +10,7 @@ pub async fn get_lcu_port_token() -> Result<serde_json::Value, String> {
         use windows_sys::{w, Win32::UI::Shell::ShellExecuteW};
 
         let command = std::ffi::OsString::from_str(&format!(
-            r#"-NoExit -Command "Get-WmiObject -Query 'SELECT CommandLine FROM Win32_Process WHERE Name=''LeagueClientUx.exe''' | Format-List CommandLine | Out-File -Width 9999 -Encoding UTF8 -FilePath '{}'""#,
+            r#"-Command "Get-WmiObject -Query 'SELECT CommandLine FROM Win32_Process WHERE Name=''LeagueClientUx.exe''' | Format-List CommandLine | Out-File -Width 9999 -Encoding UTF8 -FilePath '{}'""#,
             tmp_path.display()
         )).map_err(|e| e.to_string())?;
 

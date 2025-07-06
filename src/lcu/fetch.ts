@@ -1,3 +1,4 @@
+import { getLogger } from "@logtape/logtape";
 import { fetch as tauriFetch } from "@tauri-apps/plugin-http";
 import { compile } from "path-to-regexp";
 
@@ -8,8 +9,11 @@ import {
   Endpoints,
   endpoints,
 } from "@/lcu/endpoints";
+import { measureTime } from "@/utils/time";
 
 import { blobSchema, LcuPortToken } from "./types";
+
+const logger = getLogger(["lol-len", "lcu"]);
 
 export async function fetch(
   endpoint: string,
@@ -17,13 +21,17 @@ export async function fetch(
   init?: RequestInit
 ) {
   const { port, token } = portToken;
-  const response = await tauriFetch(`https://127.0.0.1:${port}${endpoint}`, {
-    ...init,
-    headers: {
-      Authorization: `Basic ${token}`,
-      ...init?.headers,
-    },
+  const [response, cost] = await measureTime(async () => {
+    return await tauriFetch(`https://127.0.0.1:${port}${endpoint}`, {
+      ...init,
+      headers: {
+        Authorization: `Basic ${token}`,
+        ...init?.headers,
+      },
+    });
   });
+
+  logger.trace(`fetch ${endpoint} cost time: ${cost}ms`);
 
   return response;
 }
@@ -35,6 +43,8 @@ export async function endpointFetch<E extends Endpoints>(
   query?: EndpointQueryType<E>,
   init?: RequestInit
 ): Promise<EndpointReturnType<E>> {
+  const logger = getLogger(["lol-len", "lcu"]);
+
   if (!(endpoint in endpoints)) {
     throw new Error(`Endpoint ${endpoint} not found`);
   }
@@ -60,14 +70,17 @@ export async function endpointFetch<E extends Endpoints>(
     url.search = queryString;
   }
 
-  const response = await tauriFetch(url.toString(), {
-    ...init,
-    method,
-    headers: {
-      Authorization: `Basic ${token}`,
-      ...init?.headers,
-    },
+  const [response, cost] = await measureTime(async () => {
+    return await tauriFetch(url.toString(), {
+      ...init,
+      method,
+      headers: {
+        Authorization: `Basic ${token}`,
+        ...init?.headers,
+      },
+    });
   });
+  logger.trace(`fetch ${url} cost time: ${cost}ms`);
 
   const contentType = response.headers.get("Content-Type");
 

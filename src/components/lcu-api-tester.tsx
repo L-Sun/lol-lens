@@ -1,19 +1,28 @@
 import ReactJsonView from "@microlink/react-json-view";
-import { useState } from "react";
+import { useRequest } from "ahooks";
+import { useContext, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useLcuApi } from "@/hooks";
+import { fetch } from "@/lcu/fetch";
+import { LcuInfoContext } from "@/lcu/provider";
+import { jsonSchema } from "@/lcu/types";
 
 export function LcuApiTester() {
   const [endpoint, setEndpoint] = useState("/lol-summoner/v1/current-summoner");
+  const info = useContext(LcuInfoContext);
 
-  // @ts-expect-error: Allow using a string for the endpoint
-  const { data, error, loading, run } = useLcuApi(endpoint, {
-    hookOptions: {
-      manual: true,
+  const { data, error, loading, run } = useRequest(
+    async () => {
+      if (!info.running) return;
+      const response = await fetch(endpoint, info);
+
+      return jsonSchema.parse(await response.json());
     },
-  });
+    {
+      manual: true,
+    }
+  );
 
   return (
     <div className="space-y-4">

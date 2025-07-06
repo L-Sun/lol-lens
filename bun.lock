@@ -5,6 +5,7 @@
       "name": "lol-lens",
       "dependencies": {
         "@eslint/js": "^9.30.1",
+        "@logtape/logtape": "^1.0.4",
         "@microlink/react-json-view": "^1.26.2",
         "@radix-ui/react-avatar": "^1.1.10",
         "@radix-ui/react-separator": "^1.1.7",
@@ -191,6 +192,8 @@
     "@jridgewell/sourcemap-codec": ["@jridgewell/sourcemap-codec@1.5.0", "", {}, "sha512-gv3ZRaISU3fjPAgNsriBRqGWQL6quFx04YMPW/zD8XMLsU32mhCCbfbO6KZFLjvYpCZ8zyDEgqsgf+PwPaM7GQ=="],
 
     "@jridgewell/trace-mapping": ["@jridgewell/trace-mapping@0.3.25", "", { "dependencies": { "@jridgewell/resolve-uri": "^3.1.0", "@jridgewell/sourcemap-codec": "^1.4.14" } }, "sha512-vNk6aEwybGtawWmy/PzwnGDOjCkLWSD2wqvjGGAgOAwCGWySYXfYoxt00IJkTF+8Lb57DwOb3Aa0o9CApepiYQ=="],
+
+    "@logtape/logtape": ["@logtape/logtape@1.0.4", "", {}, "sha512-YvNVrXIxVpnY528zoiEjX8PqTfr0UCtKXyssvaWL8AE+OByFTCooKuKMdPlm6g65YUI9fPXrHn4UnogSskABnA=="],
 
     "@microlink/react-json-view": ["@microlink/react-json-view@1.26.2", "", { "dependencies": { "react-base16-styling": "~0.9.0", "react-lifecycles-compat": "~3.0.4", "react-textarea-autosize": "~8.5.7" }, "peerDependencies": { "react": ">= 15", "react-dom": ">= 15" } }, "sha512-NamaHDT21njvbg2RZQq+rnu+owlPyj5lnUdVH5ZtChfTX+75QD2EGnccB1gs0De42jdPj77UQHYLr7d4J46IYA=="],
 

@@ -32,7 +32,8 @@ export function useLcuApi<E extends Endpoints>(
   return useRequest(
     async () => {
       if (!info.running) throw new Error("LCU is not running");
-      return endpointFetch(endpoint, info, params, query, init);
+
+      return await endpointFetch(endpoint, info, params, query, init);
     },
     {
       ...hookOptions,

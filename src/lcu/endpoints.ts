@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { compile as _compile } from "path-to-regexp";
 
 import {
   blobSchema,
@@ -20,7 +19,7 @@ type Endpoint<
   querySchema?: QuerySchema;
 };
 
-class EndpointBuilder<T extends {} = {}> {
+class EndpointBuilder<T extends object = object> {
   private endpoints: T = {} as T;
 
   constructor() {}
@@ -96,7 +95,8 @@ export type EndpointQueryType<E extends Endpoints> = z.infer<
 type ExtractParams<T extends string> =
   T extends `${string}/:${infer Param}/${infer Rest}`
     ? Param | ExtractParams<`/${Rest}`>
-    : T extends `${string}/:${infer Param}.${infer _}`
+    : // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    T extends `${string}/:${infer Param}.${infer _}`
     ? Param
     : T extends `${string}/:${infer Param}`
     ? Param
