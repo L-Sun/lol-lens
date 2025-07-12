@@ -19,19 +19,17 @@ export function LolStatusIndicator() {
     : t["com.lol.status.not-running"]();
 
   return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger className="flex h-6 w-6 items-center justify-center">
-          <div
-            className={`h-2 w-2 rounded-full ${
-              running ? "bg-green-500" : "bg-muted-foreground"
-            }`}
-          />
-        </TooltipTrigger>
-        <TooltipContent side="right">
-          <p>{statusText}</p>
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+    <Tooltip>
+      <TooltipTrigger className="flex h-6 w-6 items-center justify-center">
+        <div
+          className={`h-2 w-2 rounded-full ${
+            running ? "bg-green-500" : "bg-muted-foreground"
+          }`}
+        />
+      </TooltipTrigger>
+      <TooltipContent side="right">
+        <p>{statusText}</p>
+      </TooltipContent>
+    </Tooltip>
   );
 }

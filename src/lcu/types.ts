@@ -86,42 +86,61 @@ export const participantIdentitySchema = z.object({
     }),
 });
 
-export const participantSchema = participantIdentitySchema
-  .pick({
-    participantId: true,
-  })
-  .extend({
-    championId: z.number().int(),
-    stats: z.object({
-      win: z.boolean(),
-      champLevel: z.number().int(),
-      kills: z.number().int(),
-      deaths: z.number().int(),
-      assists: z.number().int(),
-      doubleKills: z.number().int(),
-      tripleKills: z.number().int(),
-      quadraKills: z.number().int(),
-      pentaKills: z.number().int(),
-      largestMultiKill: z.number().int(),
-      totalDamageTaken: z.number().int(),
-      totalDamageDealtToChampions: z.number().int(),
-      goldEarned: z.number().int(),
-      item0: z.number().int(),
-      item1: z.number().int(),
-      item2: z.number().int(),
-      item3: z.number().int(),
-      item4: z.number().int(),
-      item5: z.number().int(),
-      item6: z.number().int(),
-    }),
-  });
+export const participantSchema = z.object({
+  participantId: z.number().int(),
+  teamId: z.number().int(),
+  championId: z.number().int(),
+  spell1Id: z.number().int(),
+  spell2Id: z.number().int(),
+  stats: z.object({
+    win: z.boolean(),
+    champLevel: z.number().int(),
+    kills: z.number().int(),
+    deaths: z.number().int(),
+    assists: z.number().int(),
+    doubleKills: z.number().int(),
+    tripleKills: z.number().int(),
+    quadraKills: z.number().int(),
+    pentaKills: z.number().int(),
+    largestMultiKill: z.number().int(),
+    totalDamageTaken: z.number().int(),
+    totalDamageDealtToChampions: z.number().int(),
+    totalHeal: z.number().int(),
+    goldEarned: z.number().int(),
+    perkPrimaryStyle: z.number().int(),
+    perkSubStyle: z.number().int(),
+    item0: z.number().int(),
+    item1: z.number().int(),
+    item2: z.number().int(),
+    item3: z.number().int(),
+    item4: z.number().int(),
+    item5: z.number().int(),
+    item6: z.number().int(),
+    playerAugment1: z.number().int(),
+    playerAugment2: z.number().int(),
+    playerAugment3: z.number().int(),
+    playerAugment4: z.number().int(),
+    playerAugment5: z.number().int(),
+    playerAugment6: z.number().int(),
+  }),
+});
+
+export const gameModeSchema = z.enum([
+  "CLASSIC",
+  "BRAWL",
+  "CHERRY",
+  "TFT",
+  "ARAM",
+  "NEXUSBLITZ",
+  "STRAWBERRY",
+]);
 
 export const gameSchema = z.object({
   endOfGameResult: z.string(),
   gameCreationDate: z.coerce.date(),
   gameDuration: z.number().int(),
   gameId: z.number().int(),
-  gameMode: z.string(),
+  gameMode: gameModeSchema,
   gameType: z.string(),
   mapId: z.number().int(),
   participantIdentities: z.array(participantIdentitySchema),
@@ -172,4 +191,26 @@ export const assetItemSchema = z.object({
   priceTotal: z.number().int(),
   displayInItemSets: z.boolean(),
   iconPath: z.string(),
+});
+
+export const perkSchema = z.object({
+  id: z.number().int(),
+  name: z.string(),
+  shortDesc: z.string(),
+  iconPath: z.string(),
+});
+
+export const spellSchema = z.object({
+  id: z.number().int(),
+  name: z.string(),
+  description: z.string(),
+  iconPath: z.string(),
+  cooldown: z.number().int(),
+});
+
+export const cherryAugmentSchema = z.object({
+  id: z.number().int(),
+  nameTRA: z.string(),
+  augmentSmallIconPath: z.string(),
+  rarity: z.enum(["kBronze", "kSilver", "kGold", "kPrismatic"]),
 });

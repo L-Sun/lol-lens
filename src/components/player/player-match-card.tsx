@@ -1,10 +1,31 @@
-import { useTranslation } from "react-i18next";
+import {
+  Coins,
+  Flame,
+  Handshake,
+  HeartPlus,
+  ShieldX,
+  Skull,
+  Sword,
+} from "lucide-react";
+import { useCallback, useMemo } from "react";
 import { z } from "zod";
 
-import { ChampionIcon, ItemIcon } from "@/components/lol-icon";
+import {
+  ChampionIcon,
+  CherryAugmentIcon,
+  ItemIcon,
+  MultiKillIcon,
+  PerkIcon,
+  SpellIcon,
+} from "@/components/icons";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { useI18n, useLcuApiWithCache } from "@/hooks";
 import { gameSchema, participantSchema } from "@/lcu/types";
 
 interface PlayerMatchCardProps {
@@ -13,146 +34,188 @@ interface PlayerMatchCardProps {
 }
 
 export function PlayerMatchCard({ gameId, info }: PlayerMatchCardProps) {
-  const { t } = useTranslation();
+  const { data: game } = useLcuApiWithCache(
+    "/lol-match-history/v1/games/:gameId",
+    {
+      params: { gameId: `${gameId}` },
+      hookOptions: {
+        staleTime: -1,
+      },
+    }
+  );
 
-  const { championId, stats } = info;
-  const { kills, deaths, assists, champLevel, win, goldEarned } = stats;
-
-  // 计算KDA
-  const kda =
-    deaths === 0 ? kills + assists : ((kills + assists) / deaths).toFixed(1);
-
-  // 装备列表
-  const items = [
-    stats.item0,
-    stats.item1,
-    stats.item2,
-    stats.item3,
-    stats.item4,
-    stats.item5,
-    stats.item6,
-  ].filter((item) => item !== 0);
+  const items = ([1, 2, 3, 4, 5, 6] as const).map(
+    (i) => info.stats[`item${i}`]
+  );
+  const cherryAugment = ([1, 2, 3, 4, 5, 6] as const).map(
+    (i) => info.stats[`playerAugment${i}`]
+  );
 
   return (
-    <Card className="w-full max-w-md">
-      <CardHeader className="pb-3">
-        <div className="flex items-center gap-3">
-          <ChampionIcon championId={championId} className="h-12 w-12" />
-          <div className="flex-1">
-            <CardTitle className="text-lg">
-              {t("match.champion")} {championId}
-            </CardTitle>
-            <div className="flex items-center gap-2 mt-1">
-              <Badge variant={win ? "default" : "destructive"}>
-                {win ? t("match.victory") : t("match.defeat")}
-              </Badge>
-              <Badge variant="outline">
-                {t("match.level")} {champLevel}
+    <div className="flex flex-row items-center justify-center p-4">
+      <div className="flex flex-col gap-2">
+        <div className="flex flex-row items-center gap-2">
+          <div className="flex flex-row gap-2">
+            <div className="relative">
+              <ChampionIcon className="size-14" championId={info.championId} />
+              <Badge className="absolute bottom-0 right-0 rounded-full size-5 font-mono tabular-nums">
+                {info.stats.champLevel}
               </Badge>
             </div>
-          </div>
-        </div>
-      </CardHeader>
-
-      <CardContent className="space-y-4">
-        {/* KDA 统计 */}
-        <div className="grid grid-cols-3 gap-4 text-center">
-          <div>
-            <div className="text-2xl font-bold text-green-600">{kills}</div>
-            <div className="text-xs text-muted-foreground">
-              {t("match.kills")}
-            </div>
-          </div>
-          <div>
-            <div className="text-2xl font-bold text-red-600">{deaths}</div>
-            <div className="text-xs text-muted-foreground">
-              {t("match.deaths")}
-            </div>
-          </div>
-          <div>
-            <div className="text-2xl font-bold text-blue-600">{assists}</div>
-            <div className="text-xs text-muted-foreground">
-              {t("match.assists")}
-            </div>
-          </div>
-        </div>
-
-        <div className="text-center">
-          <Badge variant="secondary" className="text-sm">
-            KDA: {kda}
-          </Badge>
-        </div>
-
-        <Separator />
-
-        {/* 详细统计 */}
-        <div className="grid grid-cols-2 gap-4 text-sm">
-          <div className="space-y-2">
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">{t("match.gold")}</span>
-              <span className="font-medium">{goldEarned.toLocaleString()}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">
-                {t("match.damage-dealt")}
-              </span>
-              <span className="font-medium">
-                {stats.totalDamageDealtToChampions.toLocaleString()}
-              </span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">
-                {t("match.damage-taken")}
-              </span>
-              <span className="font-medium">
-                {stats.totalDamageTaken.toLocaleString()}
-              </span>
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">
-                {t("match.double-kills")}
-              </span>
-              <span className="font-medium">{stats.doubleKills}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">
-                {t("match.triple-kills")}
-              </span>
-              <span className="font-medium">{stats.tripleKills}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">
-                {t("match.quadra-kills")}
-              </span>
-              <span className="font-medium">{stats.quadraKills}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">
-                {t("match.penta-kills")}
-              </span>
-              <span className="font-medium">{stats.pentaKills}</span>
-            </div>
-          </div>
-        </div>
-
-        {/* 装备展示 */}
-        {items.length > 0 && (
-          <>
-            <Separator />
-            <div>
-              <div className="text-sm font-medium mb-2">{t("match.items")}</div>
-              <div className="flex gap-2 flex-wrap">
-                {items.map((itemId, index) => (
-                  <ItemIcon key={index} itemId={itemId} className="size-8" />
+            {game?.gameMode === "CHERRY" ? (
+              <div className="grid grid-flow-col grid-cols-3 grid-rows-2 gap-1">
+                {cherryAugment.map((augmentId, index) => (
+                  <CherryAugmentIcon key={index} cherryAugmentId={augmentId} />
                 ))}
               </div>
-            </div>
-          </>
-        )}
-      </CardContent>
-    </Card>
+            ) : (
+              <div className="flex flex-row gap-1">
+                <div className="flex flex-col">
+                  <SpellIcon spellId={info.spell1Id} />
+                  <SpellIcon spellId={info.spell2Id} />
+                </div>
+                <div className="flex flex-col">
+                  <PerkIcon perkId={info.stats.perkPrimaryStyle} />
+                  <PerkIcon perkId={info.stats.perkSubStyle} />
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+        <div>
+          {items.map((itemId, index) => (
+            <ItemIcon key={index} itemId={itemId} />
+          ))}
+        </div>
+        <PlayerStates info={info} game={game} />
+      </div>
+      <div></div>
+    </div>
+  );
+}
+
+function PlayerStates({
+  info,
+  game,
+}: {
+  info: PlayerMatchCardProps["info"];
+  game?: z.infer<typeof gameSchema>;
+}) {
+  const { t } = useI18n();
+
+  const stats = useMemo(() => {
+    if (!game) return;
+
+    const isTop = (key: keyof PlayerMatchCardProps["info"]["stats"]) => {
+      return !game.participants.some(
+        (participant) => participant.stats[key] > info.stats[key]
+      );
+    };
+
+    return {
+      topKills: isTop("kills"),
+      topDeaths: isTop("deaths"),
+      topAssists: isTop("assists"),
+      topDamage: isTop("totalDamageDealtToChampions"),
+      topDefense: isTop("totalDamageTaken"),
+      topHeal: isTop("totalHeal"),
+      topGold: isTop("goldEarned"),
+    };
+  }, [game, info]);
+
+  const WithTooltip = useCallback(
+    ({
+      children,
+      tooltip,
+    }: {
+      children: React.ReactNode;
+      tooltip: React.ReactNode;
+    }) => {
+      return (
+        <Tooltip>
+          <TooltipTrigger className="flex items-center justify-center size-5">
+            {children}
+          </TooltipTrigger>
+          <TooltipContent side="bottom" sideOffset={5}>
+            {tooltip}
+          </TooltipContent>
+        </Tooltip>
+      );
+    },
+    []
+  );
+
+  if (!stats) return <Skeleton className="w-36 h-4" />;
+
+  const {
+    topKills,
+    topDeaths,
+    topAssists,
+    topDamage,
+    topDefense,
+    topHeal,
+    topGold,
+  } = stats;
+
+  const { largestMultiKill, tripleKills, quadraKills, pentaKills } = info.stats;
+
+  return (
+    <div className="flex flex-row gap-1 h-5">
+      {tripleKills > 0 && (
+        <WithTooltip tooltip={t["match.triple-kills"]()}>
+          <MultiKillIcon count={3} size={5} />
+        </WithTooltip>
+      )}
+      {quadraKills > 0 && (
+        <WithTooltip tooltip={t["match.quadra-kills"]()}>
+          <MultiKillIcon count={4} size={5} />
+        </WithTooltip>
+      )}
+      {pentaKills > 0 && (
+        <WithTooltip tooltip={t["match.penta-kills"]()}>
+          <MultiKillIcon count={5} size={5} />
+        </WithTooltip>
+      )}
+      {topKills && (
+        <WithTooltip tooltip={t["match.top-kills"]()}>
+          <Sword className="text-zinc-300" />
+        </WithTooltip>
+      )}
+      {topDeaths && (
+        <WithTooltip tooltip={t["match.top-deaths"]()}>
+          <Skull />
+        </WithTooltip>
+      )}
+      {topAssists && (
+        <WithTooltip tooltip={t["match.top-assists"]()}>
+          <Handshake className="text-yellow-500" />
+        </WithTooltip>
+      )}
+      {topDamage && (
+        <WithTooltip tooltip={t["match.top-damage"]()}>
+          <Flame className="text-amber-500" />
+        </WithTooltip>
+      )}
+      {topDefense && (
+        <WithTooltip tooltip={t["match.top-defense"]()}>
+          <ShieldX className="text-orange-400" />
+        </WithTooltip>
+      )}
+      {topHeal && (
+        <WithTooltip tooltip={t["match.top-heal"]()}>
+          <HeartPlus className="text-green-400" />
+        </WithTooltip>
+      )}
+      {topGold && (
+        <WithTooltip tooltip={t["match.top-gold"]()}>
+          <Coins className="text-yellow-400" />
+        </WithTooltip>
+      )}
+      {largestMultiKill >= 8 && (
+        <WithTooltip tooltip={t["match.legendary"]()}>
+          <MultiKillIcon count="legendary" size={5} />
+        </WithTooltip>
+      )}
+    </div>
   );
 }

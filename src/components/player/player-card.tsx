@@ -3,7 +3,7 @@ import { useMemo, useRef } from "react";
 import { useNavigate } from "react-router";
 import { z } from "zod";
 
-import { ChampionIcon, ProfileIcon } from "@/components/lol-icon";
+import { ChampionIcon, ProfileIcon } from "@/components/icons";
 import { PlayerWinLoseBadge } from "@/components/player/player-win-lose-badge";
 import {
   Card,

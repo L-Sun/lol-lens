@@ -3,8 +3,12 @@ import { z } from "zod";
 import {
   assetItemSchema,
   blobSchema,
+  cherryAugmentSchema,
+  gameSchema,
   jsonSchema,
   matchesSchema,
+  perkSchema,
+  spellSchema,
   summonerSchema,
   summonerStatusSchema,
 } from "@/lcu/types";
@@ -83,7 +87,19 @@ export const endpoints = new EndpointBuilder()
   .add("GET", "/lol-summoner/v1/current-summoner", summonerSchema)
   .add("GET", "/lol-game-data/assets/v1/champion-icons/:id.png", blobSchema)
   .add("GET", "/lol-game-data/assets/v1/profile-icons/:id.jpg", blobSchema)
+  .add("GET", "/lol-match-history/v1/games/:gameId", gameSchema)
   .add("GET", "/lol-game-data/assets/v1/items.json", assetItemSchema.array())
+  .add(
+    "GET",
+    "/lol-game-data/assets/v1/summoner-spells.json",
+    spellSchema.array()
+  )
+  .add("GET", "/lol-game-data/assets/v1/perks.json", perkSchema.array())
+  .add(
+    "GET",
+    "/lol-game-data/assets/v1/cherry-augments.json",
+    cherryAugmentSchema.array()
+  )
   .build();
 
 export type Endpoints = keyof typeof endpoints;

@@ -14,7 +14,9 @@ import {
   Endpoints,
 } from "./lcu/endpoints";
 
-type RequestOptions<TData> = Parameters<typeof useRequest<TData, []>>[1];
+type RequestOptions<TData> = NonNullable<
+  Parameters<typeof useRequest<TData, []>>[1]
+>;
 
 export function useLcuApi<E extends Endpoints>(
   endpoint: E,
@@ -33,7 +35,14 @@ export function useLcuApi<E extends Endpoints>(
     async () => {
       if (!info.running) throw new Error("LCU is not running");
 
-      return await endpointFetch(endpoint, info, params, query, init);
+      const result = await endpointFetch<E>(
+        endpoint,
+        info,
+        params,
+        query,
+        init
+      );
+      return result;
     },
     {
       ...hookOptions,
@@ -41,6 +50,31 @@ export function useLcuApi<E extends Endpoints>(
       ready: info.running && (hookOptions?.ready ?? true),
     }
   );
+}
+
+export function useLcuApiWithCache<E extends Endpoints>(
+  endpoint: E,
+  options?: {
+    params?: EndpointParamsType<E>;
+    query?: EndpointQueryType<E>;
+    hookOptions?: Omit<RequestOptions<EndpointReturnType<E>>, "cacheKey">;
+  }
+) {
+  let cacheKey: string = endpoint;
+  if (options?.params) {
+    cacheKey = `${cacheKey}-${JSON.stringify(options.params)}`;
+  }
+  if (options?.query) {
+    cacheKey = `${cacheKey}-${JSON.stringify(options.query)}`;
+  }
+
+  return useLcuApi<E>(endpoint, {
+    ...options,
+    hookOptions: {
+      ...options?.hookOptions,
+      cacheKey,
+    },
+  });
 }
 
 export function useLcuEvent<E extends EventName>(event: E) {

@@ -24,34 +24,32 @@ export function SideNav({ routerInfos }: SideNavProps) {
   return (
     <div className="flex h-full flex-col border-r bg-background">
       <nav className="flex flex-1 flex-col items-center gap-2 p-2">
-        <TooltipProvider>
-          {routerInfos.map((route) => {
-            if (!route.NavIcon) return null;
+        {routerInfos.map((route) => {
+          if (!route.NavIcon) return null;
 
-            const isActive = route.index
-              ? pathname === "/"
-              : pathname === route.path;
+          const isActive = route.index
+            ? pathname === "/"
+            : pathname === route.path;
 
-            return (
-              <Tooltip key={route.path}>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant={isActive ? "default" : "ghost"}
-                    size="icon"
-                    asChild
-                  >
-                    <Link to={route.path}>
-                      <route.NavIcon />
-                    </Link>
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent side="right">
-                  <p>{t[route.tooltip]()}</p>
-                </TooltipContent>
-              </Tooltip>
-            );
-          })}
-        </TooltipProvider>
+          return (
+            <Tooltip key={route.path}>
+              <TooltipTrigger asChild>
+                <Button
+                  variant={isActive ? "default" : "ghost"}
+                  size="icon"
+                  asChild
+                >
+                  <Link to={route.path}>
+                    <route.NavIcon />
+                  </Link>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="right">
+                <p>{t[route.tooltip]()}</p>
+              </TooltipContent>
+            </Tooltip>
+          );
+        })}
       </nav>
 
       <Separator />

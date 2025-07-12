@@ -1,3 +1,4 @@
+import { getLogger } from "@logtape/logtape";
 import WebSocket from "@tauri-apps/plugin-websocket";
 import { noop, Subject } from "rxjs";
 
@@ -37,6 +38,8 @@ export class LcuWebSocket {
 
   private constructor(private readonly ws: WebSocket) {
     const listener = this.ws.addListener((message) => {
+      const logger = getLogger(["lol-len", "lcu"]);
+
       if (message.type === "Text") {
         if (message.data.length === 0) return;
 
@@ -44,21 +47,24 @@ export class LcuWebSocket {
         try {
           data = LcuMessageSchema.parse(JSON.parse(message.data));
         } catch (e) {
-          console.error("Failed to parse message", message.data);
-          console.error(e);
+          logger.error(
+            `Failed to parse message: ${message.data}, error: ${
+              e instanceof Error ? e.message : String(e)
+            }`
+          );
           return;
         }
 
         const [type, ...payload] = data;
         switch (type) {
           case LcuMessageType.WELCOME:
-            console.log("Welcome to the LCU", payload);
+            logger.trace("Welcome to the LCU {payload}", { payload });
             break;
           case LcuMessageType.PREFIX:
-            console.log("Prefix", payload);
+            logger.trace("Prefix {payload}", { payload });
             break;
           case LcuMessageType.CALL:
-            console.log("Call", payload);
+            logger.trace("Call {payload}", { payload });
             break;
           case LcuMessageType.CALLRESULT:
             {
@@ -81,13 +87,13 @@ export class LcuWebSocket {
             }
             break;
           case LcuMessageType.SUBSCRIBE:
-            console.log("Subscribe", payload);
+            logger.trace("Subscribe {payload}", { payload });
             break;
           case LcuMessageType.UNSUBSCRIBE:
-            console.log("Unsubscribe", payload);
+            logger.trace("Unsubscribe {payload}", { payload });
             break;
           case LcuMessageType.PUBLISH:
-            console.log("Publish", payload);
+            logger.trace("Publish {payload}", { payload });
             break;
           case LcuMessageType.EVENT:
             {
@@ -105,7 +111,7 @@ export class LcuWebSocket {
             }
             break;
           default:
-            console.log("Unknown message type", type);
+            logger.warn("Unknown message type {type}", { type });
         }
       }
     });

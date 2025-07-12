@@ -1,7 +1,7 @@
 import { EyeOff } from "lucide-react";
 import { useLocation, useParams } from "react-router";
 
-import { ProfileIcon } from "@/components/lol-icon";
+import { ProfileIcon } from "@/components/icons/profile";
 import { PlayerMatchList } from "@/components/player/player-match-list";
 import { Card, CardContent } from "@/components/ui/card";
 import { useI18n, useLcuApi } from "@/hooks";
