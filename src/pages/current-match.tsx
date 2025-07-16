@@ -5,6 +5,8 @@ export function CurrentMatch() {
   const matchData = useLcuEvent("lol-gameflow_v1_session");
   const { t } = useI18n();
 
+  console.log(matchData);
+
   if (
     !matchData ||
     matchData.gameData.teamOne.length === 0 ||
@@ -25,7 +27,6 @@ export function CurrentMatch() {
     <div className="p-6">
       <h2 className="text-2xl font-bold mb-6">当前对局</h2>
       <div className="grid grid-cols-2 gap-8">
-        {/* 左边队伍 */}
         <div className="space-y-4">
           <h3 className="text-lg font-semibold text-blue-600">蓝队</h3>
           <div className="space-y-3">
@@ -39,7 +40,6 @@ export function CurrentMatch() {
           </div>
         </div>
 
-        {/* 右边队伍 */}
         <div className="space-y-4">
           <h3 className="text-lg font-semibold text-red-600">红队</h3>
           <div className="space-y-3">

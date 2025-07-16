@@ -64,7 +64,7 @@ export function LoLIconImpl({
   }, [blob]);
 
   return (
-    <Avatar className={cn(className)} {...props}>
+    <Avatar className={cn("rounded-none", className)} {...props}>
       {imageUrl ? (
         <AvatarImage className={imgClassName} src={imageUrl} />
       ) : (

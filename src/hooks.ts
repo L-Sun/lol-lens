@@ -67,6 +67,9 @@ export function useLcuApiWithCache<E extends Endpoints>(
   if (options?.query) {
     cacheKey = `${cacheKey}-${JSON.stringify(options.query)}`;
   }
+  if (endpoint === "/lol-game-data/assets/v1/perks.json") {
+    console.log(cacheKey);
+  }
 
   return useLcuApi<E>(endpoint, {
     ...options,
@@ -118,7 +121,7 @@ export function useLcuCall<E extends Endpoints>(
 }
 
 export function useI18n() {
-  const { t: _t } = useTranslation();
+  const { t: _t, i18n } = useTranslation();
 
   const t = useMemo(() => {
     return new Proxy({} as TranslationValue, {
@@ -128,5 +131,5 @@ export function useI18n() {
     });
   }, [_t]);
 
-  return { t };
+  return { t, language: i18n.language };
 }

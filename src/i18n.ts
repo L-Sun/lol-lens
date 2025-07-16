@@ -58,6 +58,34 @@ export const translations = {
     zh: "加载中...",
     en: "Loading...",
   },
+  "game-mode.CLASSIC": {
+    zh: "召唤师峡谷",
+    en: "Summoner's Rift",
+  },
+  "game-mode.CHERRY": {
+    zh: "斗魂竞技场",
+    en: "Arena",
+  },
+  "game-mode.URF": {
+    zh: "无限火力",
+    en: "Ultimate Spellbook",
+  },
+  "game-mode.ARAM": {
+    zh: "嚎哭深渊",
+    en: "Howling Abyss",
+  },
+  "game-mode.TFT": {
+    zh: "云顶之弈",
+    en: "Teamfight Tactics",
+  },
+  "match.win": {
+    zh: "胜利",
+    en: "Victory",
+  },
+  "match.lose": {
+    zh: "失败",
+    en: "Defeat",
+  },
   "match.triple-kills": {
     zh: "三杀",
     en: "Triple Kill",
@@ -101,6 +129,39 @@ export const translations = {
   "match.top-gold": {
     zh: "纯纯的吸血鬼",
     en: "Most Gold Earned",
+  },
+  "match.cherry-0": {},
+  "match.cherry-1": {
+    zh: "吃鸡！",
+    en: "1st",
+  },
+  "match.cherry-2": {
+    zh: "第二名",
+    en: "2nd",
+  },
+  "match.cherry-3": {
+    zh: "第三名",
+    en: "3rd",
+  },
+  "match.cherry-4": {
+    zh: "第四名",
+    en: "4th",
+  },
+  "match.cherry-5": {
+    zh: "第五名",
+    en: "5th",
+  },
+  "match.cherry-6": {
+    zh: "第六名",
+    en: "6th",
+  },
+  "match.cherry-7": {
+    zh: "第七名",
+    en: "7th",
+  },
+  "match.cherry-8": {
+    zh: "老八",
+    en: "8th",
   },
 } as const;
 

@@ -19,11 +19,14 @@ export function PlayerMatchList({ puuid }: PlayerMatchListProps) {
   if (!matchData) return null;
 
   return (
-    <ul>
+    <ul className="flex flex-col gap-3 mt-3">
       {matchData.games.games.map((game) => {
         return (
           <li key={game.gameId}>
-            <PlayerMatchCard gameId={game.gameId} info={game.participants[0]} />
+            <PlayerMatchCard
+              gameId={game.gameId}
+              participant={game.participants[0]}
+            />
           </li>
         );
       })}

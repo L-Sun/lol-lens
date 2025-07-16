@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { z } from "zod";
 
 import { LoLIcon, LoLIconProps } from "@/components/icons/lol-icon";
+import { ITEM_PLACEHOLDER_PATH } from "@/components/icons/placeholder";
 import {
   Tooltip,
   TooltipContent,
@@ -15,7 +16,7 @@ interface ItemIconProps extends Omit<LoLIconProps, "children" | "path"> {
   tooltip?: boolean;
 }
 
-export function ItemIcon({ itemId, tooltip = true }: ItemIconProps) {
+export function ItemIcon({ itemId, tooltip = true, ...props }: ItemIconProps) {
   const { data } = useLcuApiWithCache("/lol-game-data/assets/v1/items.json");
 
   const itemInfo = useMemo(() => {
@@ -26,23 +27,14 @@ export function ItemIcon({ itemId, tooltip = true }: ItemIconProps) {
     tooltip ? (
       <Tooltip>
         <TooltipTrigger>
-          <LoLIcon
-            className="inline-block rounded-none border-2"
-            path={itemInfo.iconPath}
-          />
+          <LoLIcon path={itemInfo.iconPath} {...props} />
         </TooltipTrigger>
         <TooltipContent>{itemInfo.name}</TooltipContent>
       </Tooltip>
     ) : (
-      <LoLIcon
-        className="inline-block rounded-none border-2"
-        path={itemInfo.iconPath}
-      />
+      <LoLIcon path={itemInfo.iconPath} {...props} />
     )
   ) : (
-    <LoLIcon
-      className="inline-block rounded-none border-2"
-      path="/lol-game-data/assets/ASSETS/Items/Icons2D/gp_ui_placeholder.png"
-    />
+    <LoLIcon path={ITEM_PLACEHOLDER_PATH} {...props} />
   );
 }

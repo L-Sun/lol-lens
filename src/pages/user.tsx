@@ -1,4 +1,5 @@
 import { EyeOff } from "lucide-react";
+import { useMemo } from "react";
 import { useLocation, useParams } from "react-router";
 
 import { ProfileIcon } from "@/components/icons/profile";
@@ -11,12 +12,25 @@ export function UserInfo() {
   const { userId } = useParams();
   const { t } = useI18n();
 
-  const { data, loading, error } = useLcuApi(
-    pathname === "/me"
-      ? "/lol-summoner/v1/current-summoner"
-      : "/lol-summoner/v2/summoners/puuid/:puuid",
-    userId ? { params: { puuid: userId } } : undefined
-  );
+  const { endpoint, params } = useMemo(() => {
+    if (pathname === "/me" || !userId) {
+      return {
+        endpoint: "/lol-summoner/v1/current-summoner",
+        params: undefined,
+      } as const;
+    }
+    return {
+      endpoint: "/lol-summoner/v2/summoners/puuid/:puuid",
+      params: { puuid: userId },
+    } as const;
+  }, [pathname]);
+
+  const { data, loading, error } = useLcuApi(endpoint, {
+    params,
+    hookOptions: {
+      refreshDeps: [pathname],
+    },
+  });
 
   if (!data || loading || error) {
     const errorMessage = error
@@ -42,7 +56,7 @@ export function UserInfo() {
           <div className="relative">
             <ProfileIcon
               profileIconId={data.profileIconId}
-              className="size-32"
+              className="rounded-full size-32"
             />
             <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 rounded-full bg-card px-4 py-1 text-sm font-semibold shadow-lg flex items-center gap-1">
               {data.privacy === "PRIVATE" && (

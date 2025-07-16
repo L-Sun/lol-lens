@@ -1,11 +1,12 @@
+import { Moon, Sun } from "lucide-react";
 import { Link, useLocation } from "react-router";
 
+import { useTheme } from "@/components/theme-provider";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useI18n } from "@/hooks";
@@ -20,6 +21,11 @@ type SideNavProps = {
 export function SideNav({ routerInfos }: SideNavProps) {
   const { pathname } = useLocation();
   const { t } = useI18n();
+  const { theme, setTheme } = useTheme();
+
+  const handleThemeToggle = () => {
+    setTheme(theme === "dark" ? "light" : "dark");
+  };
 
   return (
     <div className="flex h-full flex-col border-r bg-background">
@@ -53,7 +59,11 @@ export function SideNav({ routerInfos }: SideNavProps) {
       </nav>
 
       <Separator />
-
+      <div className="flex flex-col gap-2 p-2">
+        <Button variant="ghost" size="icon" onClick={handleThemeToggle}>
+          {theme === "dark" ? <Moon /> : <Sun />}
+        </Button>
+      </div>
       <div className="flex justify-center p-2">
         <LolStatusIndicator />
       </div>

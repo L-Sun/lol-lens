@@ -8,6 +8,7 @@ import {
   jsonSchema,
   matchesSchema,
   perkSchema,
+  perkStyleSchema,
   spellSchema,
   summonerSchema,
   summonerStatusSchema,
@@ -93,6 +94,13 @@ export const endpoints = new EndpointBuilder()
     "GET",
     "/lol-game-data/assets/v1/summoner-spells.json",
     spellSchema.array()
+  )
+  .add(
+    "GET",
+    "/lol-game-data/assets/v1/perkstyles.json",
+    z.object({
+      styles: perkStyleSchema.array(),
+    })
   )
   .add("GET", "/lol-game-data/assets/v1/perks.json", perkSchema.array())
   .add(

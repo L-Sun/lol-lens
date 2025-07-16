@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { z } from "zod";
 
 import { LoLIcon, LoLIconProps } from "@/components/icons/lol-icon";
+import { SPELL_PLACEHOLDER_PATH } from "@/components/icons/placeholder";
 import {
   Tooltip,
   TooltipContent,
@@ -49,9 +50,6 @@ export function SpellIcon({
       <LoLIcon path={spellInfo.iconPath} className="rounded-none" {...props} />
     )
   ) : (
-    <LoLIcon
-      path="/lol-game-data/assets/ASSETS/SummonerIcons/SummonerIcons/UnknownSpell.png"
-      className="rounded-none"
-    />
+    <LoLIcon path={SPELL_PLACEHOLDER_PATH} className="rounded-none" />
   );
 }

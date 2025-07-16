@@ -1,5 +1,5 @@
 import { useEventListener } from "ahooks";
-import { useMemo, useRef } from "react";
+import { useRef } from "react";
 import { useNavigate } from "react-router";
 import { z } from "zod";
 
@@ -35,27 +35,6 @@ export function PlayerCard({ championId, puuid, ...props }: PlayerCardProps) {
     }
   );
 
-  const { profileIconId, gameName, tagLine, summonerLevel } =
-    summonerData || {};
-
-  const icon = useMemo(() => {
-    if (championId !== undefined && profileIconId !== undefined) {
-      return (
-        <div className="relative">
-          <ChampionIcon className="size-14" championId={championId} />
-          <ProfileIcon
-            className="size-6 absolute -bottom-1 -right-1"
-            profileIconId={profileIconId}
-          />
-        </div>
-      );
-    } else if (profileIconId !== undefined) {
-      return <ProfileIcon className="size-14" profileIconId={profileIconId} />;
-    } else {
-      return <Skeleton className="rounded-full size-14" />;
-    }
-  }, [championId, profileIconId]);
-
   useEventListener(
     "click",
     () => {
@@ -64,10 +43,32 @@ export function PlayerCard({ championId, puuid, ...props }: PlayerCardProps) {
     { target: ref }
   );
 
+  const { profileIconId, gameName, tagLine, summonerLevel } =
+    summonerData || {};
+
   return (
     <Card ref={ref} className="max-w-xs" clickable {...props}>
       <CardContent className="flex flex-row gap-4">
-        {icon}
+        {championId && profileIconId ? (
+          <div className="relative">
+            <ChampionIcon
+              className="rounded-full size-14"
+              championId={championId}
+            />
+            <ProfileIcon
+              className="rounded-full size-6 absolute -bottom-1 -right-1"
+              profileIconId={profileIconId}
+            />
+          </div>
+        ) : profileIconId ? (
+          <ProfileIcon
+            className="rounded-full size-14"
+            profileIconId={profileIconId}
+          />
+        ) : (
+          <Skeleton className="rounded-full size-14" />
+        )}
+        <div className="grid grid-flow-col grid-cols-3 grid-rows-2 gap-1"></div>
         <div className="flex flex-col gap-3">
           <CardTitle>
             {gameName && tagLine ? (

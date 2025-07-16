@@ -54,6 +54,7 @@ export const teamMemberSchema = z.object({
 });
 
 export const teamSchema = z.object({
+  teamId: z.number().int(),
   bans: z.array(
     z.object({
       championId: z.number().int(),
@@ -85,6 +86,18 @@ export const participantIdentitySchema = z.object({
       profileIcon: z.number().int(),
     }),
 });
+
+export enum SubteamPlacement {
+  First = 0,
+  Fir1st = 1,
+  Second = 2,
+  Third = 3,
+  Fourth = 4,
+  Fifth = 5,
+  Sixth = 6,
+  Seventh = 7,
+  Eighth = 8,
+}
 
 export const participantSchema = z.object({
   participantId: z.number().int(),
@@ -122,17 +135,16 @@ export const participantSchema = z.object({
     playerAugment4: z.number().int(),
     playerAugment5: z.number().int(),
     playerAugment6: z.number().int(),
+    subteamPlacement: z.nativeEnum(SubteamPlacement),
   }),
 });
 
 export const gameModeSchema = z.enum([
   "CLASSIC",
-  "BRAWL",
   "CHERRY",
   "TFT",
   "ARAM",
-  "NEXUSBLITZ",
-  "STRAWBERRY",
+  "URF",
 ]);
 
 export const gameSchema = z.object({
@@ -158,12 +170,14 @@ export const matchesSchema = z.object({
   }),
 });
 
-export const gameSessionSchema = z.object({
-  gameData: z.object({
-    teamOne: teamMemberSchema.array(),
-    teamTwo: teamMemberSchema.array(),
-  }),
-});
+export const gameSessionSchema = z
+  .object({
+    gameData: z.object({
+      teamOne: teamMemberSchema.array(),
+      teamTwo: teamMemberSchema.array(),
+    }),
+  })
+  .passthrough();
 
 export const LcuEventSchema = z.object({
   eventType: z.string(),
@@ -190,6 +204,13 @@ export const assetItemSchema = z.object({
   price: z.number().int(),
   priceTotal: z.number().int(),
   displayInItemSets: z.boolean(),
+  iconPath: z.string(),
+});
+
+export const perkStyleSchema = z.object({
+  id: z.number().int(),
+  name: z.string(),
+  tooltip: z.string(),
   iconPath: z.string(),
 });
 

@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { z } from "zod";
 
 import { LoLIcon, LoLIconProps } from "@/components/icons/lol-icon";
+import { ITEM_PLACEHOLDER_PATH } from "@/components/icons/placeholder";
 import {
   Tooltip,
   TooltipContent,
@@ -38,7 +39,7 @@ export function CherryAugmentIcon({
     tooltip ? (
       <Tooltip>
         <TooltipTrigger>
-          <div className="relative">
+          <div className="relative bg-black">
             <LoLIcon path={augmentInfo.augmentSmallIconPath} {...props} />
             <div
               className={cn(
@@ -60,5 +61,7 @@ export function CherryAugmentIcon({
     ) : (
       <LoLIcon path={augmentInfo.augmentSmallIconPath} {...props} />
     )
-  ) : null;
+  ) : (
+    <LoLIcon path={ITEM_PLACEHOLDER_PATH} {...props} />
+  );
 }
