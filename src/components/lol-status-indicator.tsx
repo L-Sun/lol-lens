@@ -3,7 +3,6 @@ import { useContext } from "react";
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useI18n } from "@/hooks";
