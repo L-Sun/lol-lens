@@ -1,16 +1,13 @@
 import { LcuApiTester } from "@/components/lcu-api-tester";
 import { LcuEventTester } from "@/components/lcu-event-tester";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useI18n } from "@/hooks";
 
 export function Debug() {
-  const { t } = useI18n();
-
   return (
     <div className="space-y-6 p-6">
       <Card>
         <CardHeader>
-          <CardTitle>{t["page.debug.title"]()}</CardTitle>
+          <CardTitle>LCU API Tester</CardTitle>
         </CardHeader>
         <CardContent>
           <LcuApiTester />

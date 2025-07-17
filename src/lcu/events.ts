@@ -4,7 +4,7 @@ import { gameSessionSchema, jsonSchema } from "@/lcu/types";
 
 export const eventSchemas = {
   "": jsonSchema,
-  "lol-gameflow_v1_session": gameSessionSchema,
+  "lol-gameflow_v1_session": gameSessionSchema.partial(),
 } as const;
 
 export type EventName = keyof typeof eventSchemas;

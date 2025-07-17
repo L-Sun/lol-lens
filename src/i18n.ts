@@ -22,10 +22,6 @@ export const translations = {
     zh: "当前对局",
     en: "Current Match",
   },
-  "page.debug.title": {
-    zh: "调试页面",
-    en: "Debug",
-  },
   "page.user.loading": {
     zh: "加载中...",
     en: "Loading...",
@@ -77,6 +73,10 @@ export const translations = {
   "game-mode.TFT": {
     zh: "云顶之弈",
     en: "Teamfight Tactics",
+  },
+  "game-mode.NEXUSBLITZ": {
+    zh: "枢纽战",
+    en: "Nexus Blitz",
   },
   "match.win": {
     zh: "胜利",

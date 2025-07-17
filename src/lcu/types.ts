@@ -51,6 +51,7 @@ export const teamMemberSchema = z.object({
   profileIconId: z.number().int(),
   summonerId: z.number().int(),
   puuid: z.string().uuid(),
+  teamParticipantId: z.number().int(),
 });
 
 export const teamSchema = z.object({
@@ -145,6 +146,7 @@ export const gameModeSchema = z.enum([
   "TFT",
   "ARAM",
   "URF",
+  "NEXUSBLITZ",
 ]);
 
 export const gameSchema = z.object({
@@ -170,14 +172,25 @@ export const matchesSchema = z.object({
   }),
 });
 
-export const gameSessionSchema = z
-  .object({
-    gameData: z.object({
-      teamOne: teamMemberSchema.array(),
-      teamTwo: teamMemberSchema.array(),
-    }),
-  })
-  .passthrough();
+export const gameSessionSchema = z.object({
+  gameData: z.object({
+    playerChampionSelections: z.array(
+      z.object({
+        championId: z.number().int(),
+        puuid: z.string().uuid(),
+        selectedSkinIndex: z.number().int(),
+        spell1Id: z.number().int(),
+        spell2Id: z.number().int(),
+      })
+    ),
+    teamOne: teamMemberSchema.array(),
+    teamTwo: teamMemberSchema.array(),
+  }),
+  map: z.object({
+    gameMode: gameModeSchema,
+    gameModeName: z.string(),
+  }),
+});
 
 export const LcuEventSchema = z.object({
   eventType: z.string(),

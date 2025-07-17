@@ -384,14 +384,23 @@ function PlayerStates({
 }
 
 function Team({ game }: { game: z.infer<typeof gameSchema> | undefined }) {
-  return game ? (
-    <div className="grid grid-cols-2 gap-1">
-      {game.participantIdentities.map((participantIdentity) => {
-        const participant = game.participants.find(
-          (participant) =>
-            participant.participantId === participantIdentity.participantId
+  const participants = game?.participants
+    .slice()
+    .sort((a, b) => a.teamId - b.teamId);
+
+  return participants ? (
+    <div
+      className={cn(
+        "grid grid-flow-col grid-cols-2 gap-1",
+        game?.gameMode === "CHERRY" ? "grid-rows-8" : "grid-rows-5"
+      )}
+    >
+      {participants.map((participant) => {
+        const participantIdentity = game?.participantIdentities.find(
+          (participantIdentity) =>
+            participantIdentity.participantId === participant.participantId
         );
-        if (!participant) return null;
+        if (!participantIdentity) return null;
 
         return (
           <TeamMember
@@ -424,7 +433,6 @@ function TeamMember({
   useEventListener(
     "click",
     () => {
-      console.log(puuid);
       Promise.resolve(navigate(`/user/${puuid}`)).catch(console.error);
     },
     { target: ref }

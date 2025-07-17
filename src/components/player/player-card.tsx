@@ -15,7 +15,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useLcuApi } from "@/hooks";
 import { summonerSchema, teamMemberSchema } from "@/lcu/types";
 
-interface PlayerCardProps {
+interface PlayerCardProps extends React.ComponentProps<typeof Card> {
   championId?: z.infer<typeof teamMemberSchema>["championId"];
   puuid: z.infer<typeof summonerSchema>["puuid"];
 }
@@ -69,8 +69,8 @@ export function PlayerCard({ championId, puuid, ...props }: PlayerCardProps) {
           <Skeleton className="rounded-full size-14" />
         )}
         <div className="grid grid-flow-col grid-cols-3 grid-rows-2 gap-1"></div>
-        <div className="flex flex-col gap-3">
-          <CardTitle>
+        <div className="flex flex-col gap-3 overflow-hidden">
+          <CardTitle className="truncate">
             {gameName && tagLine ? (
               `${gameName} #${tagLine}`
             ) : (

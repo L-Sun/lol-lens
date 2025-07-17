@@ -1,77 +1,70 @@
 import ReactJsonView from "@microlink/react-json-view";
-import { useCallback, useEffect, useState } from "react";
+import {
+  ChangeEvent,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useLcuEvent } from "@/hooks";
-import { EventName } from "@/lcu/events";
+import { EventName, eventSchemas } from "@/lcu/events";
+import { LcuWebSocketContext } from "@/lcu/provider";
 
 interface EventData {
   event: string;
   timestamp: number;
-  data: unknown;
+  data: z.infer<(typeof eventSchemas)[""]>;
 }
 
 export function LcuEventTester() {
+  const websocket = useContext(LcuWebSocketContext);
   const [eventName, setEventName] = useState("lol-gameflow_v1_session");
-  const [currentEvent, setCurrentEvent] = useState<string | null>(null);
+  const [isSubscribed, setIsSubscribed] = useState(false);
   const [eventData, setEventData] = useState<EventData[]>([]);
 
-  const handleRegisterEvent = () => {
-    if (!eventName.trim()) return;
-    setCurrentEvent(eventName.trim());
-    setEventName("");
-  };
+  useEffect(() => {
+    if (isSubscribed) {
+      const event = eventName.trim() as Extract<EventName, "">;
+      const unsubscribe = websocket?.subscribe(event, (data) => {
+        setEventData((prev) => [
+          { event, timestamp: Date.now(), data },
+          ...prev.slice(0, 99),
+        ]);
+      });
+      return () => unsubscribe?.();
+    }
+  }, [eventName, isSubscribed, websocket]);
 
-  const handleUnregisterEvent = () => {
-    setCurrentEvent(null);
-  };
+  const handleInputChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    setEventName(e.target.value);
+  }, []);
 
-  const handleEventData = useCallback(
-    (data: unknown) => {
-      if (!currentEvent) return;
-      setEventData((prev) => [
-        {
-          event: currentEvent,
-          timestamp: Date.now(),
-          data,
-        },
-        ...prev.slice(0, 99), // 保留最近100条记录
-      ]);
-    },
-    [currentEvent]
-  );
+  const handleButtonClick = useCallback(() => {
+    setIsSubscribed((prev) => !prev);
+  }, []);
 
   return (
     <div className="space-y-4">
       <div className="flex gap-2">
         <Input
           value={eventName}
-          onChange={(e) => setEventName(e.target.value)}
+          onChange={handleInputChange}
           placeholder="e.g. lol-gameflow_v1_session"
-          onKeyDown={(e) => e.key === "Enter" && handleRegisterEvent()}
+          disabled={isSubscribed}
         />
-        <Button onClick={handleRegisterEvent} disabled={!!currentEvent}>
-          Register
+        <Button onClick={handleButtonClick} className="relative">
+          {isSubscribed && (
+            <span className="absolute flex size-3 -top-1 -right-1">
+              <span className="absolute inline-flex size-full animate-ping rounded-full bg-sky-400 opacity-75"></span>
+              <span className="relative inline-flex size-full rounded-full bg-sky-500"></span>
+            </span>
+          )}
+          {isSubscribed ? "Unsubscribe" : "Subscribe"}
         </Button>
       </div>
-
-      {currentEvent && (
-        <div className="space-y-2">
-          <p className="text-sm font-medium">Current Event:</p>
-          <div className="flex items-center gap-2 px-3 py-1 bg-blue-100 dark:bg-blue-900/30 rounded-full w-fit">
-            <span className="text-sm font-mono">{currentEvent}</span>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleUnregisterEvent}
-              className="h-6 w-6 p-0"
-            >
-              ×
-            </Button>
-          </div>
-        </div>
-      )}
 
       {eventData.length > 0 && (
         <div className="space-y-2">
@@ -115,25 +108,6 @@ export function LcuEventTester() {
           </div>
         </div>
       )}
-
-      {currentEvent && (
-        <EventSubscription event={currentEvent} onData={handleEventData} />
-      )}
     </div>
   );
-}
-
-interface EventSubscriptionProps {
-  event: string;
-  onData: (data: unknown) => void;
-}
-
-function EventSubscription({ event, onData }: EventSubscriptionProps) {
-  const data = useLcuEvent(event as EventName);
-  useEffect(() => {
-    if (data) {
-      onData(data);
-    }
-  }, [data, onData]);
-  return null;
 }

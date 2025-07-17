@@ -5,6 +5,7 @@ import {
   blobSchema,
   cherryAugmentSchema,
   gameSchema,
+  gameSessionSchema,
   jsonSchema,
   matchesSchema,
   perkSchema,
@@ -108,6 +109,7 @@ export const endpoints = new EndpointBuilder()
     "/lol-game-data/assets/v1/cherry-augments.json",
     cherryAugmentSchema.array()
   )
+  .add("GET", "/lol-gameflow/v1/session", gameSessionSchema)
   .build();
 
 export type Endpoints = keyof typeof endpoints;
