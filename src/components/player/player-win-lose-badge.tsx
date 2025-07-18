@@ -15,7 +15,7 @@ export function PlayerWinLoseBadge({ puuid }: PlayerWinLoseBadgeProps) {
     {
       params: { puuid },
       hookOptions: { cacheKey: puuid },
-    }
+    },
   );
 
   const { wins, losses } = useMemo(() => {
@@ -24,12 +24,12 @@ export function PlayerWinLoseBadge({ puuid }: PlayerWinLoseBadgeProps) {
     const filterGames = (type: "win" | "loss") => {
       return matchData.games.games.filter((game) => {
         const participantId = game.participantIdentities.find(
-          (identity) => identity.player.puuid === puuid
+          (identity) => identity.player.puuid === puuid,
         )?.participantId;
         if (!participantId) return false;
 
         const participant = game.participants.find(
-          (participant) => participant.participantId === participantId
+          (participant) => participant.participantId === participantId,
         );
         if (!participant) return false;
 

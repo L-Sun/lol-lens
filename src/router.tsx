@@ -3,7 +3,7 @@ import { ComponentType } from "react";
 import { createBrowserRouter } from "react-router";
 
 import App from "@/app";
-import { type TranslationKey } from "@/i18n";
+import type { TranslationKey } from "@/i18n";
 import { CurrentMatch } from "@/pages/current-match";
 import { Debug } from "@/pages/debug";
 import { UserInfo } from "@/pages/user";

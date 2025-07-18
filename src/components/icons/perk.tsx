@@ -28,7 +28,7 @@ export function PerkStyleIcon({
       hookOptions: {
         staleTime: -1,
       },
-    }
+    },
   );
 
   const perkInfo = useMemo(() => {

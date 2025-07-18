@@ -22,7 +22,7 @@ export function ChampionIcon({
       hookOptions: {
         staleTime: -1,
       },
-    }
+    },
   );
 
   return (

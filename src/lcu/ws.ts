@@ -50,7 +50,7 @@ export class LcuWebSocket {
           logger.error(
             `Failed to parse message: ${message.data}, error: ${
               e instanceof Error ? e.message : String(e)
-            }`
+            }`,
           );
           return;
         }
@@ -100,7 +100,7 @@ export class LcuWebSocket {
               const [topic, eventData] = payload as [string, string];
               const eventName = topic.replace(
                 "OnJsonApiEvent_",
-                ""
+                "",
               ) as EventName;
               const schema = getEventSchema(eventName);
               const parseResult = schema.safeParse(eventData);
@@ -125,7 +125,7 @@ export class LcuWebSocket {
         headers: {
           Authorization: `Basic ${info.token}`,
         },
-      })
+      }),
     );
   }
 
@@ -140,7 +140,7 @@ export class LcuWebSocket {
 
   subscribe<E extends EventName>(
     event: E,
-    callback: (data: EventPayload<E>) => void
+    callback: (data: EventPayload<E>) => void,
   ): () => void {
     if (event.length === 0 || this.disconnected) return noop;
 
@@ -148,7 +148,7 @@ export class LcuWebSocket {
       this.subscriptions.set(event, [callback]);
       this.ws
         .send(
-          JSON.stringify([LcuMessageType.SUBSCRIBE, `OnJsonApiEvent_${event}`])
+          JSON.stringify([LcuMessageType.SUBSCRIBE, `OnJsonApiEvent_${event}`]),
         )
         .catch(console.error);
     } else {
@@ -164,9 +164,8 @@ export class LcuWebSocket {
       callbacks.splice(callbacks.indexOf(callback), 1);
 
       if (callbacks.length === 0) {
-        this.ws
-          .send(JSON.stringify([LcuMessageType.UNSUBSCRIBE, event]))
-          .catch(console.error);
+        this.ws.send(JSON.stringify([LcuMessageType.UNSUBSCRIBE, event]));
+
         this.subscriptions.delete(event);
       }
     };
@@ -186,17 +185,17 @@ export class LcuWebSocket {
               reject(
                 new Error(data.errorType, {
                   cause: data.message,
-                })
+                }),
               );
             }
             subscription.unsubscribe();
           }
-        }
+        },
       );
     });
 
     await this.ws.send(
-      JSON.stringify([LcuMessageType.CALL, requestId, endpoint])
+      JSON.stringify([LcuMessageType.CALL, requestId, endpoint]),
     );
 
     return result;

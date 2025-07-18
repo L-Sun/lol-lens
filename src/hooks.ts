@@ -1,5 +1,5 @@
-import { useRequest } from "ahooks";
 import { useContext, useEffect, useMemo, useState } from "react";
+import { useRequest } from "ahooks";
 import { useTranslation } from "react-i18next";
 
 import { translations, TranslationValue } from "@/i18n";
@@ -25,7 +25,7 @@ export function useLcuApi<E extends Endpoints>(
     query?: EndpointQueryType<E>;
     init?: RequestInit;
     hookOptions?: RequestOptions<EndpointReturnType<E>>;
-  }
+  },
 ) {
   const { params, query, init, hookOptions } = options ?? {};
 
@@ -40,7 +40,7 @@ export function useLcuApi<E extends Endpoints>(
         info,
         params,
         query,
-        init
+        init,
       );
       return result;
     },
@@ -48,7 +48,7 @@ export function useLcuApi<E extends Endpoints>(
       ...hookOptions,
       refreshDeps: [info, ...(hookOptions?.refreshDeps ?? [])],
       ready: info.running && (hookOptions?.ready ?? true),
-    }
+    },
   );
 }
 
@@ -58,7 +58,7 @@ export function useLcuApiWithCache<E extends Endpoints>(
     params?: EndpointParamsType<E>;
     query?: EndpointQueryType<E>;
     hookOptions?: Omit<RequestOptions<EndpointReturnType<E>>, "cacheKey">;
-  }
+  },
 ) {
   let cacheKey: string = endpoint;
   if (options?.params) {
@@ -101,7 +101,7 @@ export function useLcuEvent<E extends EventName>(event: E) {
 
 export function useLcuCall<E extends Endpoints>(
   cmd: E,
-  options?: RequestOptions<EndpointReturnType<E>>
+  options?: RequestOptions<EndpointReturnType<E>>,
 ) {
   const websocket = useContext(LcuWebSocketContext);
 
@@ -116,7 +116,7 @@ export function useLcuCall<E extends Endpoints>(
         websocket,
         ...(options?.refreshDeps ? options.refreshDeps : []),
       ],
-    }
+    },
   );
 }
 

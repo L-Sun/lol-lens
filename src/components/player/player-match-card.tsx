@@ -53,7 +53,7 @@ export function PlayerMatchCard({ gameId, participant }: PlayerMatchCardProps) {
       hookOptions: {
         staleTime: -1,
       },
-    }
+    },
   );
 
   return (
@@ -62,7 +62,7 @@ export function PlayerMatchCard({ gameId, participant }: PlayerMatchCardProps) {
         "flex flex-row justify-between gap-0 items-stretch p-4 border-l-6 rounded-[6px]",
         participant.stats.win
           ? "border-l-[#5383e8] bg-[#ecf2ff] dark:border-l-[#5383e8] dark:bg-[#28344e]"
-          : "border-l-[#e85353] bg-[#ffe3e3] dark:border-l-[#e84057] dark:bg-[#59343b]"
+          : "border-l-[#e85353] bg-[#ffe3e3] dark:border-l-[#e84057] dark:bg-[#59343b]",
       )}
     >
       <GameInfo
@@ -109,7 +109,6 @@ function GameInfo({
   const { t, language } = useI18n();
 
   const locale =
-    // eslint-disable-next-line import-x/namespace
     dateFnsLocale[language.replace("-", "") as keyof typeof dateFnsLocale];
 
   return game ? (
@@ -118,7 +117,7 @@ function GameInfo({
         <div
           className={cn(
             "text-base font-bold",
-            win ? "text-[#5383e8]" : "text-[#e85353]"
+            win ? "text-[#5383e8]" : "text-[#e85353]",
           )}
         >
           {t[`game-mode.${game.gameMode}`]()}
@@ -184,7 +183,7 @@ function CherryAugments({
   stats: z.infer<typeof participantSchema>["stats"];
 }) {
   const cherryAugment = ([1, 2, 3, 4, 5, 6] as const).map(
-    (i) => stats[`playerAugment${i}`]
+    (i) => stats[`playerAugment${i}`],
   );
 
   return (
@@ -268,7 +267,7 @@ function PlayerStates({
 
     const isTop = (key: keyof PlayerMatchCardProps["participant"]["stats"]) => {
       return !game.participants.some(
-        (other) => other.stats[key] > participant.stats[key]
+        (other) => other.stats[key] > participant.stats[key],
       );
     };
 
@@ -302,7 +301,7 @@ function PlayerStates({
         </Tooltip>
       );
     },
-    []
+    [],
   );
 
   if (!stats) return <Skeleton className="w-36 h-4" />;
@@ -392,13 +391,13 @@ function Team({ game }: { game: z.infer<typeof gameSchema> | undefined }) {
     <div
       className={cn(
         "grid grid-flow-col grid-cols-2 gap-1",
-        game?.gameMode === "CHERRY" ? "grid-rows-8" : "grid-rows-5"
+        game?.gameMode === "CHERRY" ? "grid-rows-8" : "grid-rows-5",
       )}
     >
       {participants.map((participant) => {
         const participantIdentity = game?.participantIdentities.find(
           (participantIdentity) =>
-            participantIdentity.participantId === participant.participantId
+            participantIdentity.participantId === participant.participantId,
         );
         if (!participantIdentity) return null;
 
@@ -435,7 +434,7 @@ function TeamMember({
     () => {
       Promise.resolve(navigate(`/user/${puuid}`)).catch(console.error);
     },
-    { target: ref }
+    { target: ref },
   );
 
   const {

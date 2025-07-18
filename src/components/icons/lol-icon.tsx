@@ -28,7 +28,7 @@ export function LoLIcon({ path, ...props }: LoLIconProps) {
       ready: info.running,
       cacheKey: path,
       staleTime: -1,
-    }
+    },
   );
 
   return <LoLIconImpl blob={data} {...props} />;

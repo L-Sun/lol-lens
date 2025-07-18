@@ -17,7 +17,7 @@ export function ProfileIcon({ profileIconId, ...props }: ProfileIconProps) {
       hookOptions: {
         staleTime: -1,
       },
-    }
+    },
   );
 
   return <LoLIconImpl blob={data} {...props} />;

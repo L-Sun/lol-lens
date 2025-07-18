@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { CSSProperties, useMemo } from "react";
 
 import { PlayerCard } from "@/components/player/player-card";
 import { useI18n, useLcuApi, useLcuEvent } from "@/hooks";
@@ -13,14 +13,14 @@ export function CurrentMatch() {
         cacheKey: "current-summoner-in-match",
         staleTime: -1, // only use the id
       },
-    }
+    },
   );
   const { t } = useI18n();
 
   const { myTeam, enemyTeam } = useMemo(() => {
     if (!matchData || !currentSummoner) return { myTeam: [], enemyTeam: [] };
     const inTeamOne = matchData.gameData.teamOne.some(
-      (player) => player.puuid === currentSummoner.puuid
+      (player) => player.puuid === currentSummoner.puuid,
     );
     return {
       myTeam: inTeamOne
@@ -55,11 +55,13 @@ export function CurrentMatch() {
       "var(--color-indigo-500)",
     ];
 
-    const playerColorMap = new Map<string, string>();
+    const playerColorMap = new Map<string, CSSProperties>();
     teamPlayers.forEach((players) => {
       if (players.length >= 2) {
         players.forEach((puuid) => {
-          playerColorMap.set(puuid, colors[colorIndex]);
+          playerColorMap.set(puuid, {
+            borderColor: colors[colorIndex],
+          });
         });
         colorIndex++;
       }
@@ -93,9 +95,7 @@ export function CurrentMatch() {
             {myTeam.map((player) => (
               <PlayerCard
                 className="border-2"
-                style={{
-                  borderColor: playerTeamColor.get(player.puuid) ?? undefined,
-                }}
+                style={playerTeamColor.get(player.puuid)}
                 key={player.puuid}
                 championId={player.championId}
                 puuid={player.puuid}
@@ -110,9 +110,7 @@ export function CurrentMatch() {
             {enemyTeam.map((player) => (
               <PlayerCard
                 className="border-2"
-                style={{
-                  borderColor: playerTeamColor.get(player.puuid) ?? undefined,
-                }}
+                style={playerTeamColor.get(player.puuid)}
                 key={player.puuid}
                 championId={player.championId}
                 puuid={player.puuid}

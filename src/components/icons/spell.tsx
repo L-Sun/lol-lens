@@ -27,7 +27,7 @@ export function SpellIcon({
       hookOptions: {
         staleTime: -1,
       },
-    }
+    },
   );
 
   const spellInfo = useMemo(() => {

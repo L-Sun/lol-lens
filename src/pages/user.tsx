@@ -36,10 +36,10 @@ export function UserInfo() {
     const errorMessage = error
       ? t["page.user.error"]()
       : loading
-      ? t["page.user.loading"]()
-      : pathname === "/me"
-      ? t["page.user.lol-not-started"]()
-      : t["page.user.user-not-found"]();
+        ? t["page.user.loading"]()
+        : pathname === "/me"
+          ? t["page.user.lol-not-started"]()
+          : t["page.user.user-not-found"]();
     return (
       <div className="flex items-center justify-center h-full w-full">
         <div className="text-2xl font-semibold text-muted-foreground text-center">

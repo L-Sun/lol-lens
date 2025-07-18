@@ -32,7 +32,7 @@ export function PlayerCard({ championId, puuid, ...props }: PlayerCardProps) {
         loadingDelay: 1000,
         cacheKey: `summoners-puuid-${puuid}`,
       },
-    }
+    },
   );
 
   useEventListener(
@@ -40,16 +40,35 @@ export function PlayerCard({ championId, puuid, ...props }: PlayerCardProps) {
     () => {
       Promise.resolve(navigate(`/user/${puuid}`)).catch(console.error);
     },
-    { target: ref }
+    { target: ref },
   );
 
-  const { profileIconId, gameName, tagLine, summonerLevel } =
-    summonerData || {};
+  if (!summonerData) {
+    return (
+      <Card ref={ref} className="max-w-xs" clickable {...props}>
+        <CardContent className="flex flex-row gap-4">
+          <Skeleton className="rounded-full size-14" />
+          <div className="grid grid-flow-col grid-cols-3 grid-rows-2 gap-1"></div>
+          <div className="flex flex-col gap-3 overflow-hidden">
+            <CardTitle className="truncate">
+              <Skeleton className="w-32 h-[1em]" />
+            </CardTitle>
+            <CardDescription className="flex flex-row gap-2 items-center">
+              <Skeleton className="min-w-12 h-[1em]" />
+              <PlayerWinLoseBadge puuid={puuid} />
+            </CardDescription>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  const { profileIconId, gameName, tagLine, summonerLevel } = summonerData;
 
   return (
     <Card ref={ref} className="max-w-xs" clickable {...props}>
       <CardContent className="flex flex-row gap-4">
-        {championId && profileIconId ? (
+        {championId ? (
           <div className="relative">
             <ChampionIcon
               className="rounded-full size-14"
@@ -60,29 +79,19 @@ export function PlayerCard({ championId, puuid, ...props }: PlayerCardProps) {
               profileIconId={profileIconId}
             />
           </div>
-        ) : profileIconId ? (
+        ) : (
           <ProfileIcon
             className="rounded-full size-14"
             profileIconId={profileIconId}
           />
-        ) : (
-          <Skeleton className="rounded-full size-14" />
         )}
         <div className="grid grid-flow-col grid-cols-3 grid-rows-2 gap-1"></div>
         <div className="flex flex-col gap-3 overflow-hidden">
           <CardTitle className="truncate">
-            {gameName && tagLine ? (
-              `${gameName} #${tagLine}`
-            ) : (
-              <Skeleton className="w-32 h-[1em]" />
-            )}
+            {gameName} #{tagLine}
           </CardTitle>
           <CardDescription className="flex flex-row gap-2 items-center">
-            {summonerLevel ? (
-              <span className="min-w-12">Lv. {summonerLevel}</span>
-            ) : (
-              <Skeleton className="min-w-12 h-[1em]" />
-            )}
+            <span className="min-w-12">Lv. {summonerLevel}</span>
             <PlayerWinLoseBadge puuid={puuid} />
           </CardDescription>
         </div>

@@ -27,7 +27,7 @@ const literalSchema = z.union([z.string(), z.number(), z.boolean(), z.null()]);
 type Literal = z.infer<typeof literalSchema>;
 type Json = Literal | { [key: string]: Json } | Json[];
 export const jsonSchema: z.ZodType<Json> = z.lazy(() =>
-  z.union([literalSchema, z.array(jsonSchema), z.record(jsonSchema)])
+  z.union([literalSchema, z.array(jsonSchema), z.record(jsonSchema)]),
 );
 
 export const blobSchema = z.instanceof(Blob);
@@ -60,7 +60,7 @@ export const teamSchema = z.object({
     z.object({
       championId: z.number().int(),
       pickTurn: z.number().int(),
-    })
+    }),
   ),
   baronKills: z.number().int(),
   dominionVictoryScore: z.number().int(),
@@ -181,7 +181,7 @@ export const gameSessionSchema = z.object({
         selectedSkinIndex: z.number().int(),
         spell1Id: z.number().int(),
         spell2Id: z.number().int(),
-      })
+      }),
     ),
     teamOne: teamMemberSchema.array(),
     teamTwo: teamMemberSchema.array(),

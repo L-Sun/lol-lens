@@ -1,4 +1,4 @@
-import { CSSProperties } from "react";
+import { CSSProperties, useMemo } from "react";
 
 import { cn } from "@/utils";
 
@@ -8,10 +8,13 @@ interface MultiKillIconProps {
 }
 
 export function MultiKillIcon({ count, size = 4 }: MultiKillIconProps) {
-  const styles: CSSProperties = {
-    fontSize: `calc(var(--spacing) * ${size})`,
-    lineHeight: `calc(var(--spacing) * ${size})`,
-  };
+  const styles = useMemo<CSSProperties>(
+    () => ({
+      fontSize: `calc(var(--spacing) * ${size})`,
+      lineHeight: `calc(var(--spacing) * ${size})`,
+    }),
+    [size],
+  );
 
   return (
     <div
@@ -20,7 +23,7 @@ export function MultiKillIcon({ count, size = 4 }: MultiKillIconProps) {
         count === "legendary" && "text-red-500",
         count === 5 && "text-red-500",
         count === 4 && "text-red-400",
-        count === 3 && "text-red-300"
+        count === 3 && "text-red-300",
       )}
       style={styles}
     >

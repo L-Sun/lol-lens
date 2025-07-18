@@ -18,7 +18,7 @@ import {
 type Endpoint<
   P extends string,
   ReturnSchema extends z.ZodTypeAny,
-  QuerySchema extends z.ZodTypeAny
+  QuerySchema extends z.ZodTypeAny,
 > = {
   method: "GET" | "POST";
   path: P;
@@ -34,12 +34,12 @@ class EndpointBuilder<T extends object = object> {
   add<
     P extends string,
     ReturnSchema extends z.ZodTypeAny,
-    QuerySchema extends z.ZodTypeAny
+    QuerySchema extends z.ZodTypeAny,
   >(
     method: "GET" | "POST",
     path: P,
     returnSchema: ReturnSchema,
-    querySchema?: QuerySchema
+    querySchema?: QuerySchema,
   ) {
     const endpoint = {
       method,
@@ -57,8 +57,8 @@ class EndpointBuilder<T extends object = object> {
       [K in keyof T | P]: K extends P
         ? typeof endpoint
         : K extends keyof T
-        ? T[K]
-        : never;
+          ? T[K]
+          : never;
     }>;
   }
 
@@ -75,7 +75,7 @@ export const endpoints = new EndpointBuilder()
   .add(
     "GET",
     "/lol-match-history/v1/products/lol/current-summoner/matches",
-    matchesSchema
+    matchesSchema,
   )
   .add(
     "GET",
@@ -84,7 +84,7 @@ export const endpoints = new EndpointBuilder()
     z.object({
       begIndex: z.number().optional(),
       endIndex: z.number().optional(),
-    })
+    }),
   )
   .add("GET", "/lol-summoner/v1/current-summoner", summonerSchema)
   .add("GET", "/lol-game-data/assets/v1/champion-icons/:id.png", blobSchema)
@@ -94,20 +94,20 @@ export const endpoints = new EndpointBuilder()
   .add(
     "GET",
     "/lol-game-data/assets/v1/summoner-spells.json",
-    spellSchema.array()
+    spellSchema.array(),
   )
   .add(
     "GET",
     "/lol-game-data/assets/v1/perkstyles.json",
     z.object({
       styles: perkStyleSchema.array(),
-    })
+    }),
   )
   .add("GET", "/lol-game-data/assets/v1/perks.json", perkSchema.array())
   .add(
     "GET",
     "/lol-game-data/assets/v1/cherry-augments.json",
-    cherryAugmentSchema.array()
+    cherryAugmentSchema.array(),
   )
   .add("GET", "/lol-gameflow/v1/session", gameSessionSchema)
   .build();
@@ -123,12 +123,11 @@ export type EndpointQueryType<E extends Endpoints> = z.infer<
 type ExtractParams<T extends string> =
   T extends `${string}/:${infer Param}/${infer Rest}`
     ? Param | ExtractParams<`/${Rest}`>
-    : // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    T extends `${string}/:${infer Param}.${infer _}`
-    ? Param
-    : T extends `${string}/:${infer Param}`
-    ? Param
-    : never;
+    : T extends `${string}/:${infer Param}.${infer _}`
+      ? Param
+      : T extends `${string}/:${infer Param}`
+        ? Param
+        : never;
 
 type ParamsToRecord<T extends string> = {
   [K in ExtractParams<T>]: string;

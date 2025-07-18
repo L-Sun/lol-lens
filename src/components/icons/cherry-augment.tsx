@@ -28,7 +28,7 @@ export function CherryAugmentIcon({
       hookOptions: {
         staleTime: -1,
       },
-    }
+    },
   );
 
   const augmentInfo = useMemo(() => {
@@ -51,7 +51,7 @@ export function CherryAugmentIcon({
                 augmentInfo.rarity === "kGold" &&
                   "bg-[linear-gradient(45deg,#7a6248_0%,#9a7e5d_25%,#c9a876_50%,#f4e6a1_75%,#fff8dc_100%)]",
                 augmentInfo.rarity === "kPrismatic" &&
-                  "bg-[linear-gradient(45deg,#ff69b4_10%,#ffb3d9_30%,#e6e6fa_50%,#c0c0c0_70%,#b8860b_90%)]"
+                  "bg-[linear-gradient(45deg,#ff69b4_10%,#ffb3d9_30%,#e6e6fa_50%,#c0c0c0_70%,#b8860b_90%)]",
               )}
             ></div>
           </div>

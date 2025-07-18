@@ -4,6 +4,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 import { z } from "zod";
@@ -45,6 +46,8 @@ export function LcuEventTester() {
   const handleButtonClick = useCallback(() => {
     setIsSubscribed((prev) => !prev);
   }, []);
+
+  const styles = useMemo(() => ({ background: "transparent" }), []);
 
   return (
     <div className="space-y-4">
@@ -95,7 +98,7 @@ export function LcuEventTester() {
                   <ReactJsonView
                     src={item.data}
                     theme="ocean"
-                    style={{ background: "transparent" }}
+                    style={styles}
                     collapsed={true}
                   />
                 ) : (

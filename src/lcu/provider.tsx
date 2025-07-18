@@ -20,7 +20,7 @@ export const LcuInfoContext = createContext<LcuInfo>({
 });
 
 export const LcuWebSocketContext = createContext<LcuWebSocket | undefined>(
-  undefined
+  undefined,
 );
 
 const LcuInfoProvider = ({ children }: { children: React.ReactNode }) => {
@@ -38,7 +38,7 @@ const LcuInfoProvider = ({ children }: { children: React.ReactNode }) => {
 
         if (running) {
           const portToken = LcuPortTokenSchema.parse(
-            await invoke("get_lcu_port_token")
+            await invoke("get_lcu_port_token"),
           );
           // test if the port is valid
           try {
@@ -52,13 +52,13 @@ const LcuInfoProvider = ({ children }: { children: React.ReactNode }) => {
           setInfo({ running: false });
         }
       })()
-        .catch(console.error)
         .finally(() => {
           setChecking(false);
-        });
+        })
+        .catch(console.error);
     },
     1000,
-    { immediate: true }
+    { immediate: true },
   );
 
   return (
@@ -77,7 +77,7 @@ const LcuWebSocketProvider = ({ children }: { children: React.ReactNode }) => {
     {
       refreshDeps: [info],
       ready: !!info.running,
-    }
+    },
   );
 
   useUnmount(() => {

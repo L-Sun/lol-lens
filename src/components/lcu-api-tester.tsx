@@ -5,6 +5,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 
@@ -46,7 +47,7 @@ export function LcuApiTester() {
     },
     {
       manual: true,
-    }
+    },
   );
 
   useEffect(() => {
@@ -64,8 +65,10 @@ export function LcuApiTester() {
     (e: ChangeEvent<HTMLInputElement>) => {
       setEndpoint(e.target.value);
     },
-    [setEndpoint]
+    [setEndpoint],
   );
+
+  const styles = useMemo(() => ({ background: "transparent" }), []);
 
   return (
     <div className="space-y-4">
@@ -99,7 +102,7 @@ export function LcuApiTester() {
             <ReactJsonView
               src={data}
               theme="ocean"
-              style={{ background: "transparent" }}
+              style={styles}
               collapsed={true}
             />
           </div>

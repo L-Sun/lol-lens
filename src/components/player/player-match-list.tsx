@@ -13,7 +13,7 @@ export function PlayerMatchList({ puuid }: PlayerMatchListProps) {
     "/lol-match-history/v1/products/lol/:puuid/matches",
     {
       params: { puuid },
-    }
+    },
   );
 
   if (!matchData) return null;

@@ -18,7 +18,7 @@ const logger = getLogger(["lol-len", "lcu"]);
 export async function fetch(
   endpoint: string,
   portToken: LcuPortToken,
-  init?: RequestInit
+  init?: RequestInit,
 ) {
   const { port, token } = portToken;
   const [response, cost] = await measureTime(async () => {
@@ -41,7 +41,7 @@ export async function endpointFetch<E extends Endpoints>(
   portToken: LcuPortToken,
   params?: EndpointParamsType<E>,
   query?: EndpointQueryType<E>,
-  init?: RequestInit
+  init?: RequestInit,
 ): Promise<EndpointReturnType<E>> {
   const logger = getLogger(["lol-len", "lcu"]);
 
@@ -65,7 +65,7 @@ export async function endpointFetch<E extends Endpoints>(
         .filter(([, value]) => value !== undefined)
         .map(([key, value]) => {
           return [`${key}`, `${value}`];
-        })
+        }),
     ).toString();
     url.search = queryString;
   }

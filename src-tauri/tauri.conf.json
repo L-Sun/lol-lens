@@ -24,11 +24,7 @@
   "bundle": {
     "active": true,
     "targets": "nsis",
-    "icon": [
-      "icons/icon.ico"
-    ],
-    "resources": [
-      "riotgames.pem"
-    ]
+    "icon": ["icons/icon.ico"],
+    "resources": ["riotgames.pem"]
   }
 }
