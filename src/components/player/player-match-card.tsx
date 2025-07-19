@@ -446,7 +446,7 @@ function TeamMember({
   return (
     <div
       ref={ref}
-      className="flex flex-row items-center w-20 h-4 gap-1 cursor-pointer hover:bg-accent rounded transition-colors"
+      className="flex flex-row items-center w-25 h-4 gap-1 cursor-pointer hover:bg-accent rounded transition-colors"
       key={participantId}
     >
       <ChampionIcon className="size-4" championId={championId ?? 0} />

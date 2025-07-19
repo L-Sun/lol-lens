@@ -1,39 +1,79 @@
 import { CSSProperties, useMemo } from "react";
 
 import { PlayerCard } from "@/components/player/player-card";
-import { useI18n, useLcuApi, useLcuEvent } from "@/hooks";
+import {
+  useBindTwoDataSources,
+  useI18n,
+  useLcuApi,
+  useLcuEvent,
+} from "@/hooks";
 
 export function CurrentMatch() {
-  useLcuEvent("lol-gameflow_v1_session");
-  const { data: matchData } = useLcuApi("/lol-gameflow/v1/session");
-  const { data: currentSummoner } = useLcuApi(
-    "/lol-summoner/v1/current-summoner",
+  const { t } = useI18n();
+
+  const matchDataFromEvent = useLcuEvent("lol-gameflow_v1_session");
+  const { data: matchDataFromApi } = useLcuApi("/lol-gameflow/v1/session");
+  const matchData = useBindTwoDataSources(matchDataFromEvent, matchDataFromApi);
+
+  const champSelectSessionFromEvent = useLcuEvent(
+    "lol-champ-select_v1_session",
+  );
+  const { data: champSelectSessionFromApi } = useLcuApi(
+    "/lol-champ-select/v1/session",
     {
       hookOptions: {
-        cacheKey: "current-summoner-in-match",
-        staleTime: -1, // only use the id
+        ready: matchData?.phase === "ChampSelect",
+        refreshDeps: [matchData?.phase],
       },
     },
   );
-  const { t } = useI18n();
+  const champSelectSession = useBindTwoDataSources(
+    champSelectSessionFromEvent,
+    champSelectSessionFromApi,
+  );
 
-  const { myTeam, enemyTeam } = useMemo(() => {
-    if (!matchData || !currentSummoner) return { myTeam: [], enemyTeam: [] };
-    const inTeamOne = matchData.gameData.teamOne.some(
-      (player) => player.puuid === currentSummoner.puuid,
-    );
-    return {
-      myTeam: inTeamOne
-        ? matchData.gameData.teamOne
-        : matchData.gameData.teamTwo,
-      enemyTeam: inTeamOne
-        ? matchData.gameData.teamTwo
-        : matchData.gameData.teamOne,
-    };
-  }, [matchData, currentSummoner]);
+  const { data: summonerData } = useLcuApi(
+    "/lol-summoner/v1/current-summoner",
+    {
+      hookOptions: {
+        cacheKey: "current-match-summoner-data",
+        staleTime: 10 * 60,
+      },
+    },
+  );
+
+  const { myTeam, theirTeam } = useMemo(() => {
+    if (matchData?.phase === "ChampSelect") {
+      return {
+        myTeam: champSelectSession?.myTeam ?? [],
+        theirTeam: (champSelectSession?.theirTeam ?? []).filter(
+          ({ puuid }) => puuid !== "",
+        ),
+      };
+    } else {
+      const inTeamOne = matchData?.gameData.teamOne.some(
+        (player) => player.puuid === summonerData?.puuid,
+      );
+
+      return {
+        myTeam: inTeamOne
+          ? (matchData?.gameData.teamOne ?? [])
+          : (matchData?.gameData.teamTwo ?? []),
+        theirTeam: inTeamOne
+          ? (matchData?.gameData.teamTwo ?? [])
+          : (matchData?.gameData.teamOne ?? []),
+      };
+    }
+  }, [matchData, champSelectSession]);
 
   const playerTeamColor = useMemo(() => {
-    const players = [...myTeam, ...enemyTeam];
+    const result = new Map<string, CSSProperties>();
+    if (!matchData) return result;
+
+    const players = [
+      ...matchData.gameData.teamOne,
+      ...matchData.gameData.teamTwo,
+    ];
     const teamPlayers = new Map<number, string[]>();
 
     players.forEach((player) => {
@@ -55,11 +95,10 @@ export function CurrentMatch() {
       "var(--color-indigo-500)",
     ];
 
-    const playerColorMap = new Map<string, CSSProperties>();
     teamPlayers.forEach((players) => {
       if (players.length >= 2) {
         players.forEach((puuid) => {
-          playerColorMap.set(puuid, {
+          result.set(puuid, {
             borderColor: colors[colorIndex],
           });
         });
@@ -67,17 +106,12 @@ export function CurrentMatch() {
       }
     });
 
-    return playerColorMap;
-  }, [myTeam, enemyTeam]);
+    return result;
+  }, [matchData]);
 
-  if (
-    !matchData ||
-    !currentSummoner ||
-    matchData.gameData.teamOne.length === 0 ||
-    matchData.gameData.teamTwo.length === 0
-  ) {
+  if (myTeam.length === 0) {
     return (
-      <div className="flex items-center justify-center h-full w-full">
+      <div className="flex flex-col items-center justify-center gap-4 h-full w-full">
         <div className="text-2xl font-semibold text-muted-foreground text-center">
           {t["page.current-match.loading"]()}
         </div>
@@ -107,7 +141,7 @@ export function CurrentMatch() {
         <div className="space-y-4">
           <h3 className="text-lg font-semibold text-red-600">红队</h3>
           <div className="space-y-3">
-            {enemyTeam.map((player) => (
+            {theirTeam.map((player) => (
               <PlayerCard
                 className="border-2"
                 style={playerTeamColor.get(player.puuid)}

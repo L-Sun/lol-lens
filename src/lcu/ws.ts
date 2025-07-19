@@ -2,7 +2,12 @@ import { getLogger } from "@logtape/logtape";
 import WebSocket from "@tauri-apps/plugin-websocket";
 import { noop, Subject } from "rxjs";
 
-import { EventName, EventPayload, getEventSchema } from "@/lcu/events";
+import {
+  EventName,
+  EventPayload,
+  eventTypeSchema,
+  getEventSchema,
+} from "@/lcu/events";
 import { DisposableGroup } from "@/utils";
 
 import { EndpointReturnType, Endpoints, endpoints } from "./endpoints";
@@ -13,6 +18,8 @@ import {
   LcuMessageType,
   LcuPortToken,
 } from "./types";
+import { z } from "zod";
+import { logger } from "./logger";
 
 type CallResult = {
   requestId: string;
@@ -30,7 +37,10 @@ type CallResult = {
 export class LcuWebSocket {
   private readonly subscriptions = new Map<
     EventName,
-    ((data: EventPayload<EventName>) => void)[]
+    {
+      eventType: z.infer<typeof eventTypeSchema>;
+      callback: (data: EventPayload<EventName>) => void;
+    }[]
   >();
   private disconnected = false;
   private readonly disposables = new DisposableGroup();
@@ -102,12 +112,27 @@ export class LcuWebSocket {
                 "OnJsonApiEvent_",
                 "",
               ) as EventName;
+              logger.trace("Event {eventName} {eventData}", {
+                eventName,
+                eventData,
+              });
+
               const schema = getEventSchema(eventName);
               const parseResult = schema.safeParse(eventData);
-              const data = parseResult.success
-                ? parseResult.data.data
-                : jsonSchema.parse(eventData);
-              this.subscriptions.get(eventName)?.forEach((cb) => cb(data));
+              if (parseResult.error) {
+                logger.error("Failed to parse event {eventName} {error}", {
+                  eventName,
+                  error: parseResult.error,
+                });
+                return;
+              }
+              const data = parseResult.data.data;
+              this.subscriptions
+                .get(eventName)
+                ?.filter(
+                  ({ eventType }) => eventType === parseResult.data.eventType,
+                )
+                .forEach(({ callback }) => callback(data));
             }
             break;
           default:
@@ -141,18 +166,35 @@ export class LcuWebSocket {
   subscribe<E extends EventName>(
     event: E,
     callback: (data: EventPayload<E>) => void,
+    options: {
+      eventType: z.infer<typeof eventTypeSchema>;
+    } = {
+      eventType: "Update",
+    },
   ): () => void {
     if (event.length === 0 || this.disconnected) return noop;
 
+    logger.trace("Subscribing to {event}", { event });
     if (!this.subscriptions.has(event)) {
-      this.subscriptions.set(event, [callback]);
+      this.subscriptions.set(event, [
+        {
+          callback,
+          eventType: options.eventType,
+        },
+      ]);
       this.ws
         .send(
           JSON.stringify([LcuMessageType.SUBSCRIBE, `OnJsonApiEvent_${event}`]),
         )
-        .catch(console.error);
+        .catch(() => {
+          const logger = getLogger(["lol-len", "lcu"]);
+          logger.error("Failed to subscribe to {event}", { event });
+        });
     } else {
-      this.subscriptions.get(event)?.push(callback);
+      this.subscriptions.get(event)?.push({
+        callback,
+        eventType: options.eventType,
+      });
     }
 
     return () => {
@@ -161,10 +203,23 @@ export class LcuWebSocket {
       if (!callbacks) {
         throw new Error(`Subscription for ${event} not found`);
       }
-      callbacks.splice(callbacks.indexOf(callback), 1);
+      callbacks.splice(
+        callbacks.findIndex(
+          ({ callback, eventType }) =>
+            callback === callback && eventType === options.eventType,
+        ),
+        1,
+      );
+      logger.trace("Unsubscribed from {event}", { event });
+      logger.trace("Callbacks length {length}", { length: callbacks.length });
 
       if (callbacks.length === 0) {
-        this.ws.send(JSON.stringify([LcuMessageType.UNSUBSCRIBE, event]));
+        this.ws.send(
+          JSON.stringify([
+            LcuMessageType.UNSUBSCRIBE,
+            `OnJsonApiEvent_${event}`,
+          ]),
+        );
 
         this.subscriptions.delete(event);
       }

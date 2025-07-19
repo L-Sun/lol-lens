@@ -18,7 +18,7 @@ export function ChampionIcon({
   const { data } = useLcuApiWithCache(
     "/lol-game-data/assets/v1/champion-icons/:id.png",
     {
-      params: { id: championId.toString() },
+      params: { id: championId === 0 ? "-1" : championId.toString() },
       hookOptions: {
         staleTime: -1,
       },

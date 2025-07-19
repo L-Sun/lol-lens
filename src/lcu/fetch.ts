@@ -12,8 +12,7 @@ import {
 import { measureTime } from "@/utils/time";
 
 import { blobSchema, LcuPortToken } from "./types";
-
-const logger = getLogger(["lol-len", "lcu"]);
+import { logger } from "./logger";
 
 export async function fetch(
   endpoint: string,
@@ -50,6 +49,14 @@ export async function endpointFetch<E extends Endpoints>(
   }
 
   const { port, token } = portToken;
+
+  if (params) {
+    for (const [key, value] of Object.entries(params)) {
+      if (value === "") {
+        throw new Error(`Param ${key} is empty`);
+      }
+    }
+  }
 
   const path = compile<EndpointParamsType<E>>(endpoint)(params);
 
@@ -91,6 +98,12 @@ export async function endpointFetch<E extends Endpoints>(
     if (!contentType?.includes("application/json")) {
       throw new Error(`Unsupported content type: ${contentType}`);
     }
-    return returnSchema.parse(await response.json());
+    const json = await response.json();
+    const result = returnSchema.safeParse(json);
+    if (!result.success) {
+      logger.error(`fetch ${url} result: ${JSON.stringify(json)}`);
+      throw new Error(`fetch ${url} result: ${JSON.stringify(json)}`);
+    }
+    return result.data;
   }
 }

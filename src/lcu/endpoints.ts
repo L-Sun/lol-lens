@@ -3,6 +3,7 @@ import { z } from "zod";
 import {
   assetItemSchema,
   blobSchema,
+  championSelectSessionSchema,
   cherryAugmentSchema,
   gameSchema,
   gameSessionSchema,
@@ -109,7 +110,9 @@ export const endpoints = new EndpointBuilder()
     "/lol-game-data/assets/v1/cherry-augments.json",
     cherryAugmentSchema.array(),
   )
+  .add("GET", "/lol-gameflow/v1/gameflow-phase", jsonSchema)
   .add("GET", "/lol-gameflow/v1/session", gameSessionSchema)
+  .add("GET", "/lol-champ-select/v1/session", championSelectSessionSchema)
   .build();
 
 export type Endpoints = keyof typeof endpoints;

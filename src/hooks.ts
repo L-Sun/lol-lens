@@ -120,6 +120,23 @@ export function useLcuCall<E extends Endpoints>(
   );
 }
 
+export function useBindTwoDataSources<T>(
+  data1: T | undefined,
+  data2: T | undefined,
+) {
+  const [data, setData] = useState<T | undefined>(undefined);
+
+  useEffect(() => {
+    if (data1) {
+      setData(data1);
+    } else if (data2) {
+      setData(data2);
+    }
+  }, [data1, data2]);
+
+  return data;
+}
+
 export function useI18n() {
   const { t: _t, i18n } = useTranslation();
 

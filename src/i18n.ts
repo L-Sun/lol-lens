@@ -54,6 +54,14 @@ export const translations = {
     zh: "加载中...",
     en: "Loading...",
   },
+  "page.current-match.refresh": {
+    zh: "刷新",
+    en: "Refresh",
+  },
+  "game-mode.": {
+    zh: "未知",
+    en: "Unknown",
+  },
   "game-mode.CLASSIC": {
     zh: "召唤师峡谷",
     en: "Summoner's Rift",

@@ -30,7 +30,8 @@ export function PlayerCard({ championId, puuid, ...props }: PlayerCardProps) {
       params: { puuid },
       hookOptions: {
         loadingDelay: 1000,
-        cacheKey: `summoners-puuid-${puuid}`,
+        cacheKey: `summoner-data-${puuid}`,
+        staleTime: 10 * 60,
       },
     },
   );

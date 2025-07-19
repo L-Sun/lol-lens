@@ -7,6 +7,8 @@ import { LcuWebSocket } from "@/lcu/ws";
 
 import { LcuPortToken, LcuPortTokenSchema } from "./types";
 
+import { logger } from "./logger";
+
 export type LcuInfo =
   | ({
       running: true;
@@ -45,7 +47,7 @@ const LcuInfoProvider = ({ children }: { children: React.ReactNode }) => {
             await endpointFetch("/lol-summoner/v1/status", portToken);
             setInfo({ running, ...portToken });
           } catch (error) {
-            console.error(error);
+            logger.error(`Failed to get port token: ${error}`);
             setInfo({ running: false });
           }
         } else {
@@ -55,7 +57,9 @@ const LcuInfoProvider = ({ children }: { children: React.ReactNode }) => {
         .finally(() => {
           setChecking(false);
         })
-        .catch(console.error);
+        .catch((error) => {
+          logger.error(error);
+        });
     },
     1000,
     { immediate: true },

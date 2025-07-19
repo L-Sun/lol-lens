@@ -141,6 +141,7 @@ export const participantSchema = z.object({
 });
 
 export const gameModeSchema = z.enum([
+  "",
   "CLASSIC",
   "CHERRY",
   "TFT",
@@ -163,7 +164,6 @@ export const gameSchema = z.object({
 });
 
 export const matchesSchema = z.object({
-  accountId: z.number().int(),
   games: z.object({
     gameCount: z.number().int(),
     gameIndexBegin: z.number().int(),
@@ -172,7 +172,22 @@ export const matchesSchema = z.object({
   }),
 });
 
+export const gameFlowPhaseSchema = z.enum([
+  "None",
+  "Lobby",
+  "Matchmaking",
+  "ReadyCheck",
+  "ChampSelect",
+  "GameStart",
+  "InProgress",
+  "Reconnect",
+  "WaitingForStats",
+  "PreEndOfGame",
+  "EndOfGame",
+]);
+
 export const gameSessionSchema = z.object({
+  phase: gameFlowPhaseSchema,
   gameData: z.object({
     playerChampionSelections: z.array(
       z.object({
@@ -247,4 +262,22 @@ export const cherryAugmentSchema = z.object({
   nameTRA: z.string(),
   augmentSmallIconPath: z.string(),
   rarity: z.enum(["kBronze", "kSilver", "kGold", "kPrismatic"]),
+});
+
+export const championSelectSchema = z.object({
+  assignedPosition: z.string(),
+  championId: z.number().int(),
+  gameName: z.string(),
+  tagLine: z.string(),
+  isHumanoid: z.boolean(),
+  nameVisibilityType: z.enum(["VISIBLE", "HIDDEN"]),
+  puuid: z.string(),
+  summonerId: z.number().int(),
+  obfuscatedPuuid: z.string(),
+  obfuscatedSummonerId: z.number().int(),
+});
+
+export const championSelectSessionSchema = z.object({
+  myTeam: championSelectSchema.array(),
+  theirTeam: championSelectSchema.array(),
 });
