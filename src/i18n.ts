@@ -58,6 +58,18 @@ export const translations = {
     zh: "刷新",
     en: "Refresh",
   },
+  "page.current-match.title": {
+    zh: "当前对局",
+    en: "Current Match",
+  },
+  "page.current-match.blue": {
+    zh: "蓝队",
+    en: "Blue Team",
+  },
+  "page.current-match.red": {
+    zh: "红队",
+    en: "Red Team",
+  },
   "game-mode.": {
     zh: "未知",
     en: "Unknown",
@@ -85,6 +97,10 @@ export const translations = {
   "game-mode.NEXUSBLITZ": {
     zh: "枢纽战",
     en: "Nexus Blitz",
+  },
+  "game-mode.ONEFORALL": {
+    zh: "克隆大作战",
+    en: "Clones",
   },
   "match.win": {
     zh: "胜利",

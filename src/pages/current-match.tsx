@@ -7,12 +7,30 @@ import {
   useLcuApi,
   useLcuEvent,
 } from "@/hooks";
+import { Button } from "@/components/ui/button";
+import { RefreshCw } from "lucide-react";
 
 export function CurrentMatch() {
   const { t } = useI18n();
 
+  const gameFlowPhaseFromEvent = useLcuEvent("lol-gameflow_v1_gameflow-phase");
+  const {
+    data: gameFlowPhaseFromApi,
+    loading,
+    run: refetchGameFlowPhase,
+  } = useLcuApi("/lol-gameflow/v1/gameflow-phase");
+  const gameFlowPhase = useBindTwoDataSources(
+    gameFlowPhaseFromEvent,
+    gameFlowPhaseFromApi,
+  );
+
   const matchDataFromEvent = useLcuEvent("lol-gameflow_v1_session");
-  const { data: matchDataFromApi } = useLcuApi("/lol-gameflow/v1/session");
+  const { data: matchDataFromApi } = useLcuApi("/lol-gameflow/v1/session", {
+    hookOptions: {
+      ready: gameFlowPhase && gameFlowPhase !== "None",
+      refreshDeps: [gameFlowPhase],
+    },
+  });
   const matchData = useBindTwoDataSources(matchDataFromEvent, matchDataFromApi);
 
   const champSelectSessionFromEvent = useLcuEvent(
@@ -115,20 +133,46 @@ export function CurrentMatch() {
         <div className="text-2xl font-semibold text-muted-foreground text-center">
           {t["page.current-match.loading"]()}
         </div>
+        <Button
+          onClick={refetchGameFlowPhase}
+          variant="ghost"
+          size="icon"
+          disabled={loading}
+        >
+          <RefreshCw className={`w-5 h-5 ${loading ? "animate-spin" : ""}`} />
+        </Button>
       </div>
     );
   }
 
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-bold mb-6">当前对局</h2>
-      <div className="grid grid-cols-2 gap-8">
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-blue-600">蓝队</h3>
-          <div className="space-y-3">
+    <div className="max-w-4xl mx-auto p-4 md:p-8">
+      <div className="flex justify-between items-center mb-6 md:mb-8">
+        <h2 className="text-3xl font-extrabold">
+          {t["page.current-match.title"]?.() || "当前对局"}
+        </h2>
+        <Button
+          onClick={refetchGameFlowPhase}
+          variant="ghost"
+          size="icon"
+          disabled={loading}
+        >
+          <RefreshCw className={`w-5 h-5 ${loading ? "animate-spin" : ""}`} />
+        </Button>
+      </div>
+      <div className="flex flex-col md:flex-row gap-6 md:gap-10">
+        {/* 蓝队 */}
+        <div className="flex-1">
+          <div className="flex items-center gap-2 mb-4">
+            <span className="inline-block w-2 h-6 bg-blue-500 rounded"></span>
+            <h3 className="text-xl font-bold text-blue-500">
+              {t["page.current-match.blue"]?.() || "蓝队"}
+            </h3>
+          </div>
+          <div className="space-y-4 md:space-y-5">
             {myTeam.map((player) => (
               <PlayerCard
-                className="border-2"
+                className="bg-[rgba(30,41,59,0.7)] backdrop-blur rounded-xl shadow-lg hover:scale-[1.03] transition-transform duration-150"
                 style={playerTeamColor.get(player.puuid)}
                 key={player.puuid}
                 championId={player.championId}
@@ -137,13 +181,23 @@ export function CurrentMatch() {
             ))}
           </div>
         </div>
-
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-red-600">红队</h3>
-          <div className="space-y-3">
+        {/* 分割线：大屏竖线，小屏横线 */}
+        <div className="my-4 md:my-0 md:mx-2 flex-shrink-0 flex flex-col items-center justify-center">
+          <div className="block md:hidden h-px w-full bg-slate-700 opacity-30"></div>
+          <div className="hidden md:block w-px h-full bg-slate-700 opacity-30"></div>
+        </div>
+        {/* 红队 */}
+        <div className="flex-1">
+          <div className="flex items-center gap-2 mb-4">
+            <span className="inline-block w-2 h-6 bg-red-500 rounded"></span>
+            <h3 className="text-xl font-bold text-red-500">
+              {t["page.current-match.red"]?.() || "红队"}
+            </h3>
+          </div>
+          <div className="space-y-4 md:space-y-5">
             {theirTeam.map((player) => (
               <PlayerCard
-                className="border-2"
+                className="bg-[rgba(59,30,41,0.7)] backdrop-blur rounded-xl shadow-lg hover:scale-[1.03] transition-transform duration-150"
                 style={playerTeamColor.get(player.puuid)}
                 key={player.puuid}
                 championId={player.championId}

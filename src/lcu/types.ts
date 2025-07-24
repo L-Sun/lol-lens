@@ -148,6 +148,7 @@ export const gameModeSchema = z.enum([
   "ARAM",
   "URF",
   "NEXUSBLITZ",
+  "ONEFORALL",
 ]);
 
 export const gameSchema = z.object({

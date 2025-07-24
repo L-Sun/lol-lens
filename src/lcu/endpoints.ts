@@ -5,6 +5,7 @@ import {
   blobSchema,
   championSelectSessionSchema,
   cherryAugmentSchema,
+  gameFlowPhaseSchema,
   gameSchema,
   gameSessionSchema,
   jsonSchema,
@@ -113,6 +114,7 @@ export const endpoints = new EndpointBuilder()
   .add("GET", "/lol-gameflow/v1/gameflow-phase", jsonSchema)
   .add("GET", "/lol-gameflow/v1/session", gameSessionSchema)
   .add("GET", "/lol-champ-select/v1/session", championSelectSessionSchema)
+  .add("GET", "/lol-gameflow/v1/gameflow-phase", gameFlowPhaseSchema)
   .build();
 
 export type Endpoints = keyof typeof endpoints;

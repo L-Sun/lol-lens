@@ -2,6 +2,7 @@ import { z } from "zod";
 
 import {
   championSelectSessionSchema,
+  gameFlowPhaseSchema,
   gameSessionSchema,
   jsonSchema,
 } from "@/lcu/types";
@@ -10,6 +11,7 @@ export const eventSchemas = {
   "": jsonSchema,
   "lol-gameflow_v1_session": gameSessionSchema,
   "lol-champ-select_v1_session": championSelectSessionSchema,
+  "lol-gameflow_v1_gameflow-phase": gameFlowPhaseSchema,
 } as const;
 
 export type EventName = keyof typeof eventSchemas;

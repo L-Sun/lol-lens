@@ -101,8 +101,10 @@ export async function endpointFetch<E extends Endpoints>(
     const json = await response.json();
     const result = returnSchema.safeParse(json);
     if (!result.success) {
-      logger.error(`fetch ${url} result: ${JSON.stringify(json)}`);
-      throw new Error(`fetch ${url} result: ${JSON.stringify(json)}`);
+      logger.error(
+        `fetch ${url} error: ${result.error} result: ${JSON.stringify(json)}`,
+      );
+      throw new Error(`fetch ${url} error: ${result.error}`);
     }
     return result.data;
   }
