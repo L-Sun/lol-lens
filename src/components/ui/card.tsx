@@ -14,8 +14,8 @@ function Card({ className, clickable = false, ...props }: CardProps) {
         "bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm",
         clickable && [
           "cursor-pointer transition-all duration-200",
-          "hover:shadow-lg hover:border-border hover:bg-card/80",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+          "hover:border-border hover:bg-card/80 hover:shadow-lg",
+          "focus-visible:ring-ring focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none",
           "active:scale-[0.98] active:shadow-sm",
         ],
         className,

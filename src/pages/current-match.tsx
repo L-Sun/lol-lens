@@ -129,8 +129,8 @@ export function CurrentMatch() {
 
   if (myTeam.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center gap-4 h-full w-full">
-        <div className="text-2xl font-semibold text-muted-foreground text-center">
+      <div className="flex h-full w-full flex-col items-center justify-center gap-4">
+        <div className="text-muted-foreground text-center text-2xl font-semibold">
           {t["page.current-match.loading"]()}
         </div>
         <Button
@@ -139,15 +139,15 @@ export function CurrentMatch() {
           size="icon"
           disabled={loading}
         >
-          <RefreshCw className={`w-5 h-5 ${loading ? "animate-spin" : ""}`} />
+          <RefreshCw className={`h-5 w-5 ${loading ? "animate-spin" : ""}`} />
         </Button>
       </div>
     );
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-4 md:p-8">
-      <div className="flex justify-between items-center mb-6 md:mb-8">
+    <div className="mx-auto max-w-4xl p-4 md:p-8">
+      <div className="mb-6 flex items-center justify-between md:mb-8">
         <h2 className="text-3xl font-extrabold">
           {t["page.current-match.title"]?.() || "当前对局"}
         </h2>
@@ -157,14 +157,13 @@ export function CurrentMatch() {
           size="icon"
           disabled={loading}
         >
-          <RefreshCw className={`w-5 h-5 ${loading ? "animate-spin" : ""}`} />
+          <RefreshCw className={`h-5 w-5 ${loading ? "animate-spin" : ""}`} />
         </Button>
       </div>
-      <div className="flex flex-col md:flex-row gap-6 md:gap-10">
-        {/* 蓝队 */}
+      <div className="flex flex-col gap-6 md:flex-row md:gap-10">
         <div className="flex-1">
-          <div className="flex items-center gap-2 mb-4">
-            <span className="inline-block w-2 h-6 bg-blue-500 rounded"></span>
+          <div className="mb-4 flex items-center gap-2">
+            <span className="inline-block h-6 w-2 rounded bg-blue-500"></span>
             <h3 className="text-xl font-bold text-blue-500">
               {t["page.current-match.blue"]?.() || "蓝队"}
             </h3>
@@ -172,7 +171,7 @@ export function CurrentMatch() {
           <div className="space-y-4 md:space-y-5">
             {myTeam.map((player) => (
               <PlayerCard
-                className="bg-[rgba(30,41,59,0.7)] backdrop-blur rounded-xl shadow-lg hover:scale-[1.03] transition-transform duration-150"
+                className="rounded-xl bg-[rgba(30,41,59,0.7)] shadow-lg backdrop-blur transition-transform duration-150 hover:scale-[1.03]"
                 style={playerTeamColor.get(player.puuid)}
                 key={player.puuid}
                 championId={player.championId}
@@ -181,15 +180,13 @@ export function CurrentMatch() {
             ))}
           </div>
         </div>
-        {/* 分割线：大屏竖线，小屏横线 */}
-        <div className="my-4 md:my-0 md:mx-2 flex-shrink-0 flex flex-col items-center justify-center">
-          <div className="block md:hidden h-px w-full bg-slate-700 opacity-30"></div>
-          <div className="hidden md:block w-px h-full bg-slate-700 opacity-30"></div>
+        <div className="my-4 flex flex-shrink-0 flex-col items-center justify-center md:mx-2 md:my-0">
+          <div className="block h-px w-full bg-slate-700 opacity-30 md:hidden"></div>
+          <div className="hidden h-full w-px bg-slate-700 opacity-30 md:block"></div>
         </div>
-        {/* 红队 */}
         <div className="flex-1">
-          <div className="flex items-center gap-2 mb-4">
-            <span className="inline-block w-2 h-6 bg-red-500 rounded"></span>
+          <div className="mb-4 flex items-center gap-2">
+            <span className="inline-block h-6 w-2 rounded bg-red-500"></span>
             <h3 className="text-xl font-bold text-red-500">
               {t["page.current-match.red"]?.() || "红队"}
             </h3>
@@ -197,7 +194,7 @@ export function CurrentMatch() {
           <div className="space-y-4 md:space-y-5">
             {theirTeam.map((player) => (
               <PlayerCard
-                className="bg-[rgba(59,30,41,0.7)] backdrop-blur rounded-xl shadow-lg hover:scale-[1.03] transition-transform duration-150"
+                className="rounded-xl bg-[rgba(59,30,41,0.7)] shadow-lg backdrop-blur transition-transform duration-150 hover:scale-[1.03]"
                 style={playerTeamColor.get(player.puuid)}
                 key={player.puuid}
                 championId={player.championId}

@@ -41,8 +41,8 @@ export function UserInfo() {
           ? t["page.user.lol-not-started"]()
           : t["page.user.user-not-found"]();
     return (
-      <div className="flex items-center justify-center h-full w-full">
-        <div className="text-2xl font-semibold text-muted-foreground text-center">
+      <div className="flex h-full w-full items-center justify-center">
+        <div className="text-muted-foreground text-center text-2xl font-semibold">
           {errorMessage}
         </div>
       </div>
@@ -56,11 +56,11 @@ export function UserInfo() {
           <div className="relative">
             <ProfileIcon
               profileIconId={data.profileIconId}
-              className="rounded-full size-32"
+              className="size-32 rounded-full"
             />
-            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 rounded-full bg-card px-4 py-1 text-sm font-semibold shadow-lg flex items-center gap-1">
+            <div className="bg-card absolute bottom-0 left-1/2 flex -translate-x-1/2 translate-y-1/2 items-center gap-1 rounded-full px-4 py-1 text-sm font-semibold shadow-lg">
               {data.privacy === "PRIVATE" && (
-                <EyeOff className="mr-1 h-4 w-4 text-muted-foreground" />
+                <EyeOff className="text-muted-foreground mr-1 h-4 w-4" />
               )}
               {data.summonerLevel}
             </div>

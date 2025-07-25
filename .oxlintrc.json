@@ -1,22 +1,13 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": [
-    "typescript",
-    "import",
-    "promise",
-    "react",
-    "react-perf"
-  ],
+  "plugins": ["typescript", "import", "promise", "react", "react-perf"],
   "categories": {
     "correctness": "off"
   },
   "env": {
     "builtin": true
   },
-  "ignorePatterns": [
-    "**/node_modules",
-    "src-tauri/target"
-  ],
+  "ignorePatterns": ["**/node_modules", "src-tauri/target"],
   "rules": {
     "for-direction": "error",
     "no-async-promise-executor": "error",
@@ -116,12 +107,7 @@
   },
   "overrides": [
     {
-      "files": [
-        "**/*.ts",
-        "**/*.tsx",
-        "**/*.mts",
-        "**/*.cts"
-      ],
+      "files": ["**/*.ts", "**/*.tsx", "**/*.mts", "**/*.cts"],
       "rules": {
         "no-class-assign": "off",
         "no-const-assign": "off",

@@ -48,14 +48,14 @@ export function PlayerCard({ championId, puuid, ...props }: PlayerCardProps) {
     return (
       <Card ref={ref} className="max-w-xs" clickable {...props}>
         <CardContent className="flex flex-row gap-4">
-          <Skeleton className="rounded-full size-14" />
+          <Skeleton className="size-14 rounded-full" />
           <div className="grid grid-flow-col grid-cols-3 grid-rows-2 gap-1"></div>
           <div className="flex flex-col gap-3 overflow-hidden">
             <CardTitle className="truncate">
-              <Skeleton className="w-32 h-[1em]" />
+              <Skeleton className="h-[1em] w-32" />
             </CardTitle>
-            <CardDescription className="flex flex-row gap-2 items-center">
-              <Skeleton className="min-w-12 h-[1em]" />
+            <CardDescription className="flex flex-row items-center gap-2">
+              <Skeleton className="h-[1em] min-w-12" />
               <PlayerWinLoseBadge puuid={puuid} />
             </CardDescription>
           </div>
@@ -72,17 +72,17 @@ export function PlayerCard({ championId, puuid, ...props }: PlayerCardProps) {
         {championId ? (
           <div className="relative">
             <ChampionIcon
-              className="rounded-full size-14"
+              className="size-14 rounded-full"
               championId={championId}
             />
             <ProfileIcon
-              className="rounded-full size-6 absolute -bottom-1 -right-1"
+              className="absolute -right-1 -bottom-1 size-6 rounded-full"
               profileIconId={profileIconId}
             />
           </div>
         ) : (
           <ProfileIcon
-            className="rounded-full size-14"
+            className="size-14 rounded-full"
             profileIconId={profileIconId}
           />
         )}
@@ -91,7 +91,7 @@ export function PlayerCard({ championId, puuid, ...props }: PlayerCardProps) {
           <CardTitle className="truncate">
             {gameName} #{tagLine}
           </CardTitle>
-          <CardDescription className="flex flex-row gap-2 items-center">
+          <CardDescription className="flex flex-row items-center gap-2">
             <span className="min-w-12">Lv. {summonerLevel}</span>
             <PlayerWinLoseBadge puuid={puuid} />
           </CardDescription>

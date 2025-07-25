@@ -9,7 +9,7 @@ function App() {
     <LcuProvider>
       <div className="flex h-screen">
         <SideNav routerInfos={navInfos} />
-        <main className="p-6 flex-1 overflow-auto scrollbar-hide">
+        <main className="scrollbar-hide flex-1 overflow-auto p-6">
           <Outlet />
         </main>
       </div>

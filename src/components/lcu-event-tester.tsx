@@ -60,7 +60,7 @@ export function LcuEventTester() {
         />
         <Button onClick={handleButtonClick} className="relative">
           {isSubscribed && (
-            <span className="absolute flex size-3 -top-1 -right-1">
+            <span className="absolute -top-1 -right-1 flex size-3">
               <span className="absolute inline-flex size-full animate-ping rounded-full bg-sky-400 opacity-75"></span>
               <span className="relative inline-flex size-full rounded-full bg-sky-500"></span>
             </span>
@@ -83,14 +83,14 @@ export function LcuEventTester() {
               Clear
             </Button>
           </div>
-          <div className="space-y-2 max-h-96 overflow-y-auto">
+          <div className="max-h-96 space-y-2 overflow-y-auto">
             {eventData.map((item, index) => (
-              <div key={index} className="rounded-lg bg-muted p-4">
-                <div className="flex items-center justify-between mb-2">
+              <div key={index} className="bg-muted rounded-lg p-4">
+                <div className="mb-2 flex items-center justify-between">
                   <span className="font-mono text-sm text-blue-600">
                     {item.event}
                   </span>
-                  <span className="text-xs text-muted-foreground">
+                  <span className="text-muted-foreground text-xs">
                     {new Date(item.timestamp).toLocaleTimeString()}
                   </span>
                 </div>

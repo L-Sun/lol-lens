@@ -59,7 +59,7 @@ export function PlayerMatchCard({ gameId, participant }: PlayerMatchCardProps) {
   return (
     <Card
       className={cn(
-        "flex flex-row justify-between gap-0 items-stretch p-4 border-l-6 rounded-[6px]",
+        "flex flex-row items-stretch justify-between gap-0 rounded-[6px] border-l-6 p-4",
         participant.stats.win
           ? "border-l-[#5383e8] bg-[#ecf2ff] dark:border-l-[#5383e8] dark:bg-[#28344e]"
           : "border-l-[#e85353] bg-[#ffe3e3] dark:border-l-[#e84057] dark:bg-[#59343b]",
@@ -71,8 +71,8 @@ export function PlayerMatchCard({ gameId, participant }: PlayerMatchCardProps) {
         subteamPlacement={participant.stats.subteamPlacement}
       />
       <div className="flex flex-row gap-2">
-        <div className="flex flex-col gap-2 justify-center">
-          <div className="flex flex-row gap-2 items-center">
+        <div className="flex flex-col justify-center gap-2">
+          <div className="flex flex-row items-center gap-2">
             <ChampionIconWithLevel
               championId={participant.championId}
               level={participant.stats.champLevel}
@@ -86,7 +86,7 @@ export function PlayerMatchCard({ gameId, participant }: PlayerMatchCardProps) {
           <PlayerItems stats={participant.stats} />
         </div>
         <Separator orientation="vertical" />
-        <div className="flex flex-col gap-2 items-center">
+        <div className="flex flex-col items-center gap-2">
           <KDA stats={participant.stats} />
           <Separator />
           <PlayerStates participant={participant} game={game} />
@@ -132,7 +132,7 @@ function GameInfo({
       </div>
       <Separator />
       <div>
-        <div className="text-base font-bold flex items-center">
+        <div className="flex items-center text-base font-bold">
           {win ? t["match.win"]() : t["match.lose"]()}
           {game.gameMode === "CHERRY" && (
             <span className="ml-1 text-sm text-gray-500 dark:text-gray-400">
@@ -148,13 +148,13 @@ function GameInfo({
   ) : (
     <div className="flex flex-col gap-4">
       <div className="space-y-2">
-        <Skeleton className="w-16 h-5" />
-        <Skeleton className="w-24 h-4" />
+        <Skeleton className="h-5 w-16" />
+        <Skeleton className="h-4 w-24" />
       </div>
       <Separator />
       <div className="space-y-2">
-        <Skeleton className="w-16 h-5" />
-        <Skeleton className="w-24 h-4" />
+        <Skeleton className="h-5 w-16" />
+        <Skeleton className="h-4 w-24" />
       </div>
     </div>
   );
@@ -169,8 +169,8 @@ function ChampionIconWithLevel({
 }) {
   return (
     <div className="relative">
-      <ChampionIcon className="rounded-full size-16" championId={championId} />
-      <Badge className="absolute bottom-0 right-0 rounded-full size-5 font-mono tabular-nums">
+      <ChampionIcon className="size-16 rounded-full" championId={championId} />
+      <Badge className="absolute right-0 bottom-0 size-5 rounded-full font-mono tabular-nums">
         {level}
       </Badge>
     </div>
@@ -209,11 +209,11 @@ function PlayerSpellsAndPerks({
       <SpellIcon className="border-2" spellId={participant.spell1Id} />
       <SpellIcon className="border-2" spellId={participant.spell2Id} />
       <PerkStyleIcon
-        className="border-2 rounded-full bg-black"
+        className="rounded-full border-2 bg-black"
         perkStyleId={participant.stats.perkPrimaryStyle}
       />
       <PerkStyleIcon
-        className="border-2 rounded-full bg-black"
+        className="rounded-full border-2 bg-black"
         perkStyleId={participant.stats.perkSubStyle}
       />
     </div>
@@ -225,8 +225,8 @@ function KDA({ stats }: { stats: z.infer<typeof participantSchema>["stats"] }) {
   const kda = (kills + assists) / (deaths || 1);
 
   return (
-    <div className="w-24 flex flex-col items-center">
-      <div className="font-bold text-base">
+    <div className="flex w-24 flex-col items-center">
+      <div className="text-base font-bold">
         <span>{kills}</span> / <span className="text-red-600">{deaths}</span> /{" "}
         <span>{assists}</span>
       </div>
@@ -245,7 +245,7 @@ function PlayerItems({
   const items = ([0, 1, 2, 3, 4, 5, 6] as const).map((i) => stats[`item${i}`]);
 
   return (
-    <div className="flex flex-row gap-[2px] items-center">
+    <div className="flex flex-row items-center gap-[2px]">
       {items.map((itemId, index) => (
         <ItemIcon key={index} itemId={itemId} className="rounded-sm border-2" />
       ))}
@@ -292,7 +292,7 @@ function PlayerStates({
     }) => {
       return (
         <Tooltip>
-          <TooltipTrigger className="flex items-center justify-center size-5">
+          <TooltipTrigger className="flex size-5 items-center justify-center">
             {children}
           </TooltipTrigger>
           <TooltipContent side="bottom" sideOffset={5}>
@@ -304,7 +304,7 @@ function PlayerStates({
     [],
   );
 
-  if (!stats) return <Skeleton className="w-36 h-4" />;
+  if (!stats) return <Skeleton className="h-4 w-36" />;
 
   const {
     topKills,
@@ -320,7 +320,7 @@ function PlayerStates({
     participant.stats;
 
   return (
-    <div className="grid grid-rows-2 grid-cols-5 gap-1 py-1">
+    <div className="grid grid-cols-5 grid-rows-2 gap-1 py-1">
       {largestMultiKill >= 8 && (
         <WithTooltip tooltip={t["match.legendary"]()}>
           <MultiKillIcon count="legendary" size={5} />
@@ -413,7 +413,7 @@ function Team({ game }: { game: z.infer<typeof gameSchema> | undefined }) {
   ) : (
     <div className="grid grid-cols-2 gap-2">
       {Array.from({ length: 10 }).map((_, index) => (
-        <Skeleton key={index} className="w-20 h-4" />
+        <Skeleton key={index} className="h-4 w-20" />
       ))}
     </div>
   );
@@ -446,11 +446,11 @@ function TeamMember({
   return (
     <div
       ref={ref}
-      className="flex flex-row items-center w-25 h-4 gap-1 cursor-pointer hover:bg-accent rounded transition-colors"
+      className="hover:bg-accent flex h-4 w-25 cursor-pointer flex-row items-center gap-1 rounded transition-colors"
       key={participantId}
     >
       <ChampionIcon className="size-4" championId={championId ?? 0} />
-      <span className="text-sm text-gray-500 dark:text-gray-400 truncate">
+      <span className="truncate text-sm text-gray-500 dark:text-gray-400">
         {gameName}
       </span>
     </div>

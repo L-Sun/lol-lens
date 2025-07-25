@@ -98,7 +98,7 @@ export function LcuApiTester() {
       <div>
         {error && <p className="text-destructive">{error.message}</p>}
         {data && typeof data === "object" && !(data instanceof Blob) ? (
-          <div className="rounded-lg bg-muted p-4">
+          <div className="bg-muted rounded-lg p-4">
             <ReactJsonView
               src={data}
               theme="ocean"
@@ -107,7 +107,7 @@ export function LcuApiTester() {
             />
           </div>
         ) : typeof data === "string" ? (
-          <pre className="rounded-lg bg-muted p-4">{String(data)}</pre>
+          <pre className="bg-muted rounded-lg p-4">{String(data)}</pre>
         ) : imageURL ? (
           <img src={imageURL} alt="image" className="rounded-lg" />
         ) : null}

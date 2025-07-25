@@ -28,7 +28,7 @@ export function SideNav({ routerInfos }: SideNavProps) {
   };
 
   return (
-    <div className="flex h-full flex-col border-r bg-background">
+    <div className="bg-background flex h-full flex-col border-r">
       <nav className="flex flex-1 flex-col items-center gap-2 p-2">
         {routerInfos.map((route) => {
           if (!route.NavIcon) return null;

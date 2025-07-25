@@ -43,7 +43,7 @@ export function CherryAugmentIcon({
             <LoLIcon path={augmentInfo.augmentSmallIconPath} {...props} />
             <div
               className={cn(
-                "mix-blend-multiply absolute inset-0",
+                "absolute inset-0 mix-blend-multiply",
                 augmentInfo.rarity === "kBronze" &&
                   "bg-[#8B4513] brightness-110 contrast-125 saturate-150",
                 augmentInfo.rarity === "kSilver" &&
