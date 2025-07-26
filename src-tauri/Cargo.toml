@@ -1,6 +1,6 @@
 [package]
 name = "lol-lens"
-version = "0.1.0"
+version = "0.1.1"
 description = "LoL Lens - League of Legends Helper Tool"
 authors = ["you"]
 edition = "2021"
