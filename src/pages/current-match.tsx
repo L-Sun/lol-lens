@@ -9,16 +9,16 @@ import {
 } from "@/hooks";
 import { Button } from "@/components/ui/button";
 import { RefreshCw } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import { cn } from "@/utils/tailwind";
 
 export function CurrentMatch() {
   const { t } = useI18n();
 
   const gameFlowPhaseFromEvent = useLcuEvent("lol-gameflow_v1_gameflow-phase");
-  const {
-    data: gameFlowPhaseFromApi,
-    loading,
-    run: refetchGameFlowPhase,
-  } = useLcuApi("/lol-gameflow/v1/gameflow-phase");
+  const { data: gameFlowPhaseFromApi, run: refetchGameFlowPhase } = useLcuApi(
+    "/lol-gameflow/v1/gameflow-phase",
+  );
   const gameFlowPhase = useBindTwoDataSources(
     gameFlowPhaseFromEvent,
     gameFlowPhaseFromApi,
@@ -131,79 +131,84 @@ export function CurrentMatch() {
     return (
       <div className="flex h-full w-full flex-col items-center justify-center gap-4">
         <div className="text-muted-foreground text-center text-2xl font-semibold">
-          {t["page.current-match.loading"]()}
+          {t["page.current-match.waiting-for-match-to-start"]()}
         </div>
         <Button
           onClick={refetchGameFlowPhase}
+          className="cursor-pointer"
           variant="ghost"
           size="icon"
-          disabled={loading}
         >
-          <RefreshCw className={`h-5 w-5 ${loading ? "animate-spin" : ""}`} />
+          <RefreshCw className="h-5 w-5" />
         </Button>
       </div>
     );
   }
 
   return (
-    <div className="mx-auto max-w-4xl p-4 md:p-8">
+    <div className="mx-auto max-w-4xl p-4">
       <div className="mb-6 flex items-center justify-between md:mb-8">
         <h2 className="text-3xl font-extrabold">
           {t["page.current-match.title"]?.() || "当前对局"}
         </h2>
         <Button
           onClick={refetchGameFlowPhase}
+          className="cursor-pointer"
           variant="ghost"
           size="icon"
-          disabled={loading}
         >
-          <RefreshCw className={`h-5 w-5 ${loading ? "animate-spin" : ""}`} />
+          <RefreshCw className="h-5 w-5" />
         </Button>
       </div>
-      <div className="flex flex-col gap-6 md:flex-row md:gap-10">
-        <div className="flex-1">
-          <div className="mb-4 flex items-center gap-2">
-            <span className="inline-block h-6 w-2 rounded bg-blue-500"></span>
-            <h3 className="text-xl font-bold text-blue-500">
-              {t["page.current-match.blue"]?.() || "蓝队"}
-            </h3>
-          </div>
-          <div className="space-y-4 md:space-y-5">
-            {myTeam.map((player) => (
-              <PlayerCard
-                className="rounded-xl bg-[rgba(30,41,59,0.7)] shadow-lg backdrop-blur transition-transform duration-150 hover:scale-[1.03]"
-                style={playerTeamColor.get(player.puuid)}
-                key={player.puuid}
-                championId={player.championId}
-                puuid={player.puuid}
-              />
-            ))}
-          </div>
-        </div>
-        <div className="my-4 flex flex-shrink-0 flex-col items-center justify-center md:mx-2 md:my-0">
-          <div className="block h-px w-full bg-slate-700 opacity-30 md:hidden"></div>
-          <div className="hidden h-full w-px bg-slate-700 opacity-30 md:block"></div>
-        </div>
-        <div className="flex-1">
-          <div className="mb-4 flex items-center gap-2">
-            <span className="inline-block h-6 w-2 rounded bg-red-500"></span>
-            <h3 className="text-xl font-bold text-red-500">
-              {t["page.current-match.red"]?.() || "红队"}
-            </h3>
-          </div>
-          <div className="space-y-4 md:space-y-5">
-            {theirTeam.map((player) => (
-              <PlayerCard
-                className="rounded-xl bg-[rgba(59,30,41,0.7)] shadow-lg backdrop-blur transition-transform duration-150 hover:scale-[1.03]"
-                style={playerTeamColor.get(player.puuid)}
-                key={player.puuid}
-                championId={player.championId}
-                puuid={player.puuid}
-              />
-            ))}
-          </div>
-        </div>
+      <div className="flex flex-row justify-center gap-4">
+        <Team team="blue" players={myTeam} colors={playerTeamColor} />
+        <Separator orientation="vertical" />
+        <Team team="red" players={theirTeam} colors={playerTeamColor} />
       </div>
+    </div>
+  );
+}
+
+function Team({
+  team,
+  players,
+  colors,
+}: {
+  team: "blue" | "red";
+  players: {
+    puuid: string;
+    championId: number;
+  }[];
+  colors: Map<string, CSSProperties>;
+}) {
+  const { t } = useI18n();
+
+  return (
+    <div className="flex flex-col items-stretch gap-4">
+      <div className="flex items-center gap-2">
+        <span
+          className={cn("inline-block h-6 w-2 rounded", {
+            "bg-red-500": team === "red",
+            "bg-blue-500": team === "blue",
+          })}
+        ></span>
+        <h3
+          className={cn("text-xl font-bold", {
+            "text-red-500": team === "red",
+            "text-blue-500": team === "blue",
+          })}
+        >
+          {t[`page.current-match.${team}`]()}
+        </h3>
+      </div>
+      {players.map((player) => (
+        <PlayerCard
+          style={colors.get(player.puuid)}
+          key={player.puuid}
+          championId={player.championId}
+          puuid={player.puuid}
+        />
+      ))}
     </div>
   );
 }

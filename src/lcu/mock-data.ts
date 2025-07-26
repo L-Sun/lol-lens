@@ -1,4 +1,4 @@
-import { gameSessionSchema } from "@/lcu/types";
+import { gameSessionSchema } from "@/lcu/schemas";
 
 export const mockData = gameSessionSchema.parse({
   gameData: {

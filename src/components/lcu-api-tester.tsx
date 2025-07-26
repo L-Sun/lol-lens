@@ -20,7 +20,7 @@ import {
 import { endpoints } from "@/lcu/endpoints";
 import { fetch } from "@/lcu/fetch";
 import { LcuInfoContext } from "@/lcu/provider";
-import { jsonSchema } from "@/lcu/types";
+import { jsonSchema } from "@/lcu/schemas";
 
 export function LcuApiTester() {
   const [endpoint, setEndpoint] = useState("/lol-summoner/v1/current-summoner");

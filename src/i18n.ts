@@ -50,9 +50,9 @@ export const translations = {
     zh: "等级",
     en: "Level",
   },
-  "page.current-match.loading": {
-    zh: "加载中...",
-    en: "Loading...",
+  "page.current-match.waiting-for-match-to-start": {
+    zh: "等待对局开始",
+    en: "Waiting for match to start",
   },
   "page.current-match.refresh": {
     zh: "刷新",

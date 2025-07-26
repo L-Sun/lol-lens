@@ -3,7 +3,7 @@ import { z } from "zod";
 
 import { Badge } from "@/components/ui/badge";
 import { useLcuApi } from "@/hooks";
-import { summonerSchema } from "@/lcu/types";
+import { summonerSchema } from "@/lcu/schemas";
 
 type PlayerWinLoseBadgeProps = {
   puuid: z.infer<typeof summonerSchema>["puuid"];

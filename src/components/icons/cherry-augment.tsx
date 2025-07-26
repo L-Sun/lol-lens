@@ -9,7 +9,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useLcuApiWithCache } from "@/hooks";
-import { cherryAugmentSchema } from "@/lcu/types";
+import { cherryAugmentSchema } from "@/lcu/schemas";
 import { cn } from "@/utils";
 
 interface CherryAugmentProps extends Omit<LoLIconProps, "children" | "path"> {

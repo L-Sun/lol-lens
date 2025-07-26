@@ -15,7 +15,7 @@ import {
   spellSchema,
   summonerSchema,
   summonerStatusSchema,
-} from "@/lcu/types";
+} from "@/lcu/schemas";
 
 type Endpoint<
   P extends string,

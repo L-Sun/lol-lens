@@ -9,7 +9,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useLcuApiWithCache } from "@/hooks";
-import { assetItemSchema } from "@/lcu/types";
+import { assetItemSchema } from "@/lcu/schemas";
 
 interface ItemIconProps extends Omit<LoLIconProps, "children" | "path"> {
   itemId: z.infer<typeof assetItemSchema>["id"];

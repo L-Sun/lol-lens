@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import { LoLIconImpl, LoLIconImplProps } from "@/components/icons/lol-icon";
 import { useLcuApiWithCache } from "@/hooks";
-import { summonerSchema } from "@/lcu/types";
+import { summonerSchema } from "@/lcu/schemas";
 
 export interface ProfileIconProps
   extends Omit<LoLIconImplProps, "children" | "blob"> {

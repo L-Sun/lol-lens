@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import { PlayerMatchCard } from "@/components/player/player-match-card";
 import { useLcuApi } from "@/hooks";
-import { summonerSchema } from "@/lcu/types";
+import { summonerSchema } from "@/lcu/schemas";
 
 interface PlayerMatchListProps {
   puuid: z.infer<typeof summonerSchema>["puuid"];

@@ -17,7 +17,7 @@ import {
   LcuMessageSchema,
   LcuMessageType,
   LcuPortToken,
-} from "./types";
+} from "./schemas";
 import { z } from "zod";
 import { logger } from "./logger";
 

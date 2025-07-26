@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import { LoLIconImpl, LoLIconImplProps } from "@/components/icons/lol-icon";
 import { useLcuApiWithCache } from "@/hooks";
-import { teamMemberSchema } from "@/lcu/types";
+import { teamMemberSchema } from "@/lcu/schemas";
 import { cn } from "@/utils";
 
 interface ChampionIconProps

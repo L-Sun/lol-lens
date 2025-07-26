@@ -5,7 +5,7 @@ import {
   gameFlowPhaseSchema,
   gameSessionSchema,
   jsonSchema,
-} from "@/lcu/types";
+} from "@/lcu/schemas";
 
 export const eventSchemas = {
   "": jsonSchema,

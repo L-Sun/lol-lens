@@ -9,7 +9,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useLcuApiWithCache } from "@/hooks";
-import { spellSchema } from "@/lcu/types";
+import { spellSchema } from "@/lcu/schemas";
 
 interface SpellIconProps extends Omit<LoLIconProps, "children" | "path"> {
   spellId: z.infer<typeof spellSchema>["id"];

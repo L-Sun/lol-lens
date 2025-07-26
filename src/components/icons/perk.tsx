@@ -8,7 +8,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useLcuApiWithCache } from "@/hooks";
-import { perkSchema } from "@/lcu/types";
+import { perkSchema } from "@/lcu/schemas";
 import { cn } from "@/utils";
 
 interface PerkIconProps extends Omit<LoLIconProps, "path"> {

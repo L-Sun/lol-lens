@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useLcuApi } from "@/hooks";
-import { summonerSchema, teamMemberSchema } from "@/lcu/types";
+import { summonerSchema, teamMemberSchema } from "@/lcu/schemas";
 
 interface PlayerCardProps extends React.ComponentProps<typeof Card> {
   championId?: z.infer<typeof teamMemberSchema>["championId"];
@@ -67,12 +67,12 @@ export function PlayerCard({ championId, puuid, ...props }: PlayerCardProps) {
   const { profileIconId, gameName, tagLine, summonerLevel } = summonerData;
 
   return (
-    <Card ref={ref} className="max-w-xs" clickable {...props}>
-      <CardContent className="flex flex-row gap-4">
+    <Card ref={ref} className="py-4" clickable {...props}>
+      <CardContent className="flex flex-row gap-2 px-2">
         {championId ? (
           <div className="relative">
             <ChampionIcon
-              className="size-14 rounded-full"
+              className="size-12 rounded-full"
               championId={championId}
             />
             <ProfileIcon
@@ -82,13 +82,13 @@ export function PlayerCard({ championId, puuid, ...props }: PlayerCardProps) {
           </div>
         ) : (
           <ProfileIcon
-            className="size-14 rounded-full"
+            className="size-12 rounded-full"
             profileIconId={profileIconId}
           />
         )}
         <div className="grid grid-flow-col grid-cols-3 grid-rows-2 gap-1"></div>
         <div className="flex flex-col gap-3 overflow-hidden">
-          <CardTitle className="truncate">
+          <CardTitle className="w-48 truncate">
             {gameName} #{tagLine}
           </CardTitle>
           <CardDescription className="flex flex-row items-center gap-2">

@@ -11,7 +11,7 @@ import {
 } from "@/lcu/endpoints";
 import { measureTime } from "@/utils/time";
 
-import { blobSchema, LcuPortToken } from "./types";
+import { blobSchema, LcuPortToken } from "./schemas";
 import { logger } from "./logger";
 
 export async function fetch(
@@ -102,7 +102,7 @@ export async function endpointFetch<E extends Endpoints>(
     const result = returnSchema.safeParse(json);
     if (!result.success) {
       logger.error(
-        `fetch ${url} error: ${result.error} result: ${JSON.stringify(json)}`,
+        `fetch ${url} error: ${result.error.message} result: ${JSON.stringify(json)}`,
       );
       throw new Error(`fetch ${url} error: ${result.error}`);
     }

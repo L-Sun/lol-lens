@@ -5,7 +5,7 @@ import { createContext, useContext, useState } from "react";
 import { endpointFetch } from "@/lcu/fetch";
 import { LcuWebSocket } from "@/lcu/ws";
 
-import { LcuPortToken, LcuPortTokenSchema } from "./types";
+import { LcuPortToken, LcuPortTokenSchema } from "./schemas";
 
 import { logger } from "./logger";
 

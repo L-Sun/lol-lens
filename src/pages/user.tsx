@@ -52,7 +52,7 @@ export function UserInfo() {
   return (
     <>
       <Card>
-        <CardContent className="flex flex-col items-center gap-6 p-12">
+        <CardContent className="flex flex-col items-center gap-6 p-4">
           <div className="relative">
             <ProfileIcon
               profileIconId={data.profileIconId}

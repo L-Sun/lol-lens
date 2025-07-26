@@ -37,7 +37,7 @@ import {
   participantIdentitySchema,
   participantSchema,
   SubteamPlacement,
-} from "@/lcu/types";
+} from "@/lcu/schemas";
 import { cn } from "@/utils";
 
 interface PlayerMatchCardProps {
