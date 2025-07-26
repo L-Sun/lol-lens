@@ -24,8 +24,6 @@
   "bundle": {
     "active": true,
     "targets": "app",
-    "icon": [
-      "icons/icon.ico"
-    ]
+    "icon": ["icons/icon.ico"]
   }
 }
