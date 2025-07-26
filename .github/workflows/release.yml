@@ -27,6 +27,8 @@ jobs:
       - name: install frontend dependencies
         run: bun install
 
+      - uses: Swatinem/rust-cache@v2
+
       - name: build
         run: bun tauri build
 
