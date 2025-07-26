@@ -14,7 +14,6 @@ jobs:
       matrix:
         include:
           - platform: "windows-latest"
-            args: ""
 
     runs-on: ${{ matrix.platform }}
     steps:
@@ -28,13 +27,10 @@ jobs:
       - name: install frontend dependencies
         run: bun install
 
-      - uses: tauri-apps/tauri-action@v0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: build
+        run: bun tauri build
+
+      - name: Release
+        uses: softprops/action-gh-release@v2
         with:
-          tagName: lol-lens-v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version.
-          releaseName: "lol-lens v__VERSION__"
-          releaseBody: "See the assets to download this version and install."
-          releaseDraft: false
-          prerelease: false
-          args: ${{ matrix.args }}
+          files: ./src-tauri/target/release/lol-lens.exe
