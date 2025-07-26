@@ -46,12 +46,12 @@ export function PlayerCard({ championId, puuid, ...props }: PlayerCardProps) {
 
   if (!summonerData) {
     return (
-      <Card ref={ref} className="max-w-xs" clickable {...props}>
-        <CardContent className="flex flex-row gap-4">
+      <Card ref={ref} className="py-4" clickable {...props}>
+        <CardContent className="flex flex-row gap-2 px-2">
           <Skeleton className="size-14 rounded-full" />
           <div className="grid grid-flow-col grid-cols-3 grid-rows-2 gap-1"></div>
           <div className="flex flex-col gap-3 overflow-hidden">
-            <CardTitle className="truncate">
+            <CardTitle className="w-48 truncate">
               <Skeleton className="h-[1em] w-32" />
             </CardTitle>
             <CardDescription className="flex flex-row items-center gap-2">

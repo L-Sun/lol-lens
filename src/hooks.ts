@@ -60,7 +60,7 @@ export function useLcuApiWithCache<E extends Endpoints>(
     hookOptions?: Omit<RequestOptions<EndpointReturnType<E>>, "cacheKey">;
   },
 ) {
-  let cacheKey: string = endpoint;
+  let cacheKey: string = `${endpoint}`;
   if (options?.params) {
     cacheKey = `${cacheKey}-${JSON.stringify(options.params)}`;
   }

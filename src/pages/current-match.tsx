@@ -184,7 +184,7 @@ function Team({
   const { t } = useI18n();
 
   return (
-    <div className="flex flex-col items-stretch gap-4">
+    <div className="flex flex-1 flex-col items-stretch gap-4">
       <div className="flex items-center gap-2">
         <span
           className={cn("inline-block h-6 w-2 rounded", {

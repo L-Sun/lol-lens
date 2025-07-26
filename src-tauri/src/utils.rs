@@ -4,15 +4,13 @@ use rustls::{
     ClientConfig, RootCertStore,
 };
 use std::sync::Arc;
-use tauri::{path::BaseDirectory, plugin::TauriPlugin, Manager, Runtime};
+use tauri::{plugin::TauriPlugin, Runtime};
 use tokio_tungstenite::Connector;
 
-pub fn load_root_cert(handle: &tauri::AppHandle) -> Result<CertificateDer> {
-    let pem = handle
-        .path()
-        .resolve("riotgames.pem", BaseDirectory::Resource)?;
-
-    Ok(CertificateDer::from_pem_file(pem)?)
+pub fn load_root_cert() -> Result<CertificateDer<'static>> {
+    let pem = include_bytes!("../riotgames.pem");
+    let cert = CertificateDer::from_pem_slice(pem)?;
+    Ok(cert)
 }
 
 pub fn ws_plugin<R: Runtime>(cert: &CertificateDer) -> Result<TauriPlugin<R>> {

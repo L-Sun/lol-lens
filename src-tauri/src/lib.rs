@@ -7,7 +7,7 @@ pub fn run() {
         .plugin(tauri_plugin_opener::init())
         .setup(|app| {
             let handle = app.handle();
-            let cert = utils::load_root_cert(handle)?;
+            let cert = utils::load_root_cert()?;
             let _ = rustls::crypto::aws_lc_rs::default_provider().install_default();
             handle.plugin(utils::ws_plugin(&cert)?)?;
             handle.plugin(utils::http_plugin(&cert)?)?;

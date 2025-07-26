@@ -1,9 +1,13 @@
 [package]
 name = "lol-lens"
 version = "0.1.0"
-description = "A Tauri App"
+description = "LoL Lens - League of Legends Helper Tool"
 authors = ["you"]
 edition = "2021"
+license = "MIT"
+repository = "https://github.com/your-username/lol-lens"
+keywords = ["league-of-legends", "helper", "tauri"]
+categories = ["games", "utilities"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
