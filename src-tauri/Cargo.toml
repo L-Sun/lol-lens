@@ -34,10 +34,10 @@ base64 = "0.22.1"
 sysinfo = "0.35.0"
 tauri-plugin-websocket = { version = "2", features = ["rustls-tls"] }
 rustls = "0.23.27"
-tokio-tungstenite = "0.26.2"
+tokio-tungstenite = "0.27.0"
 tauri-plugin-http = "2"
 reqwest = "0.12.20"
 tracing-subscriber = "*"
 
 [patch.crates-io]
-tauri-plugin-http = { path = "../../plugins-workspace/plugins/http" }
+tauri-plugin-http = { git = "https://github.com/L-Sun/plugins-workspace" }
